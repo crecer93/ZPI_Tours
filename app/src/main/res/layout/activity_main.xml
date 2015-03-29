@@ -24,7 +24,6 @@
         android:text="Login"
         android:ems="10"
         android:id="@+id/textBoxLogin"
-        android:layout_toEndOf="@+id/textView"
         android:layout_gravity="center_horizontal" />
 
 

@@ -3,6 +3,8 @@ package com.example.zpi.zpi_tours;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 
 public class MainActivity extends Activity {
 
@@ -20,6 +27,14 @@ public class MainActivity extends Activity {
     EditText password ;
     Context context;
     Intent intent;
+
+    private Socket client;
+    private PrintWriter printwriter;
+
+    private EditText textField;
+    private Button button;
+    private String messsage;
+    String GPSLocation;
 
 
     @Override
@@ -31,6 +46,7 @@ public class MainActivity extends Activity {
         buttonLogin = (Button)findViewById(R.id.buttonLogin);
         login   = (EditText)findViewById(R.id.textBoxLogin);
         password   = (EditText)findViewById(R.id.textBoxPass);
+
 
         buttonLogin.setOnClickListener(
                 new View.OnClickListener() {
@@ -49,9 +65,48 @@ public class MainActivity extends Activity {
                         }
 
 
+
                     }
                 });
 
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+
+                    messsage = ""+login.getText()+""+password.getText(); // get the text message on the text field
+                    // Reset the text field to blank
+                    LocationManager locationManager = (LocationManager)
+                            getSystemService(Context.LOCATION_SERVICE);
+                    SendMessage sendMessageTask = new SendMessage();
+                    sendMessageTask.execute();
+                }
+
+
+        });
+    }
+
+    private class SendMessage extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                client = new Socket("192.168.1.2", 4444); // connect to the server
+                printwriter = new PrintWriter(client.getOutputStream(), true);
+                printwriter.write(messsage); // write the message to output stream
+
+                printwriter.flush();
+                printwriter.close();
+                client.close(); // closing the connection
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
     }
 
