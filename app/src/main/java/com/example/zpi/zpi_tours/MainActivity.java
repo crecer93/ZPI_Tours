@@ -7,6 +7,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.PrintStreamPrinter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,8 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -23,18 +28,24 @@ import java.net.UnknownHostException;
 public class MainActivity extends Activity {
 
     Button   buttonLogin;
+    Button   buttonAnswer;
     EditText login ;
     EditText password ;
     Context context;
     Intent intent;
+   // private  String message;
+
+
+
 
     private Socket client;
     private PrintWriter printwriter;
+    private InputStreamReader inputstreamreader ;
 
-    private EditText textField;
-    private Button button;
+
     private String messsage;
-    String GPSLocation;
+
+
 
 
     @Override
@@ -44,6 +55,7 @@ public class MainActivity extends Activity {
 
 
         buttonLogin = (Button)findViewById(R.id.buttonLogin);
+        buttonAnswer = (Button)findViewById(R.id.buttonAnswer);
         login   = (EditText)findViewById(R.id.textBoxLogin);
         password   = (EditText)findViewById(R.id.textBoxPass);
 
@@ -74,13 +86,25 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
 
 
-                    messsage = ""+login.getText()+""+password.getText(); // get the text message on the text field
+                    messsage = ":"+login.getText()+":"+password.getText(); // get the text message on the text field
                     // Reset the text field to blank
-                    LocationManager locationManager = (LocationManager)
-                            getSystemService(Context.LOCATION_SERVICE);
                     SendMessage sendMessageTask = new SendMessage();
                     sendMessageTask.execute();
                 }
+
+
+        });
+
+        buttonAnswer.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+
+
+
+               GetAnswer getAnswer = new GetAnswer();
+               getAnswer.execute();
+
+            }
 
 
         });
@@ -98,6 +122,40 @@ public class MainActivity extends Activity {
 
                 printwriter.flush();
                 printwriter.close();
+                client.close(); // closing the connection
+
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+    }
+
+    private class GetAnswer extends AsyncTask<Void, Void, Void> {
+       // String message ;
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+
+                client = new Socket("192.168.1.2", 4444); // connect to the server
+                inputstreamreader = new  InputStreamReader ( client.getInputStream());
+
+
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+
+                String fromServer;
+                fromServer = in.readLine();
+                 System.out.println( fromServer+"");
+
+               // printwriter = new PrintWriter(client.getOutputStream(), true);
+                //printwriter.write(messsage); // write the message to output stream
+
+                //printwriter.flush();
+               // printwriter.close();
                 client.close(); // closing the connection
 
             } catch (UnknownHostException e) {

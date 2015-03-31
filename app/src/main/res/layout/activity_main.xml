@@ -61,5 +61,13 @@
         android:id="@+id/buttonLogin"
        />
 
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Answer"
+        android:layout_marginLeft="120dp"
+        android:id="@+id/buttonAnswer"
+        />
+
 
 </LinearLayout>
