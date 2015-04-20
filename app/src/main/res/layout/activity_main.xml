@@ -19,9 +19,9 @@
         android:id="@+id/lableLogin" />
 
     <EditText
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="jan@gmail.com"
         android:ems="10"
         android:id="@+id/textBoxLogin"
         android:layout_gravity="center_horizontal" />
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
-            android:text="pass"
+            android:text="poop"
             android:id="@+id/textBoxPass"
             android:layout_weight="1" />
     </LinearLayout>

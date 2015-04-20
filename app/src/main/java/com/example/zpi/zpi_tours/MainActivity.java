@@ -3,11 +3,9 @@ package com.example.zpi.zpi_tours;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.PrintStreamPrinter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,38 +13,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class MainActivity extends Activity {
 
     Button   buttonLogin;
     Button   buttonAnswer;
-    EditText login ;
+    EditText loginBox ;
     EditText password ;
     Context context;
     Intent intent;
-   // private  String message;
 
-
-
-
-    private Socket client;
-    private PrintWriter printwriter;
-    private InputStreamReader inputstreamreader ;
-
-
-    private String messsage;
-
-
-
+    private String jsonResult;
+    private String url = "http://192.168.0.11/SerwerXampp/ZPI_Tours/login.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,120 +51,99 @@ public class MainActivity extends Activity {
 
         buttonLogin = (Button)findViewById(R.id.buttonLogin);
         buttonAnswer = (Button)findViewById(R.id.buttonAnswer);
-        login   = (EditText)findViewById(R.id.textBoxLogin);
+        loginBox   = (EditText)findViewById(R.id.textBoxLogin);
         password   = (EditText)findViewById(R.id.textBoxPass);
 
 
         buttonLogin.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        if (login.getText().toString().equals("login")& password.getText().toString().equals("qwerty")){
-                            Log.v("Urzytkownik", login.getText().toString()+" jest zalogowany");
-                            context =getApplicationContext();
-
-                             intent = new Intent(context, GeneralActivity.class );
-                            startActivity(intent);
-                        }else {
-                            Toast toast = Toast.makeText(getApplicationContext(),
-                                    "Hasło lub login jest nie poprawne!", Toast.LENGTH_SHORT);
-                            toast.show();
-                            Log.v("Urzytkownik", login.getText().toString()+" nie jest zalogowany");
-                        }
-
-
-
+                        accessWebService();
                     }
                 });
+    }
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+    private class JsonReadTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(params[0]);
+            try {
+                HttpResponse response = httpclient.execute(httppost);
+                jsonResult = inputStreamToString(
+                        response.getEntity().getContent()).toString();
+            }
 
-            public void onClick(View v) {
+            catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
-
-                    messsage = ":"+login.getText()+":"+password.getText(); // get the text message on the text field
-                    // Reset the text field to blank
-                    SendMessage sendMessageTask = new SendMessage();
-                    sendMessageTask.execute();
+        private StringBuilder inputStreamToString(InputStream is) {
+            String rLine = "";
+            StringBuilder answer = new StringBuilder();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+            try {
+                while ((rLine = rd.readLine()) != null) {
+                    answer.append(rLine);
                 }
-
-
-        });
-
-        buttonAnswer.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-
-
-
-               GetAnswer getAnswer = new GetAnswer();
-               getAnswer.execute();
-
             }
-
-
-        });
-    }
-
-    private class SendMessage extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-
-                client = new Socket("192.168.1.2", 4444); // connect to the server
-                printwriter = new PrintWriter(client.getOutputStream(), true);
-                printwriter.write(messsage); // write the message to output stream
-
-                printwriter.flush();
-                printwriter.close();
-                client.close(); // closing the connection
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            catch (IOException e) {
+                // e.printStackTrace();
+                Toast.makeText(getApplicationContext(),
+                        "Error..." + e.toString(), Toast.LENGTH_LONG).show();
             }
-            return null;
+            return answer;
         }
 
-    }
-
-    private class GetAnswer extends AsyncTask<Void, Void, Void> {
-       // String message ;
         @Override
-        protected Void doInBackground(Void... params) {
-            try {
-
-                client = new Socket("192.168.1.2", 4444); // connect to the server
-                inputstreamreader = new  InputStreamReader ( client.getInputStream());
-
-
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
-                String fromServer;
-                fromServer = in.readLine();
-                 System.out.println( fromServer+"");
-
-               // printwriter = new PrintWriter(client.getOutputStream(), true);
-                //printwriter.write(messsage); // write the message to output stream
-
-                //printwriter.flush();
-               // printwriter.close();
-                client.close(); // closing the connection
-
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+        protected void onPostExecute(String result) {
+            asceessPoint();
         }
+    }// end async task
 
+    public void accessWebService() {
+        JsonReadTask task = new JsonReadTask();
+        // passes values for the urls string array
+        task.execute(new String[] { url });
     }
 
+    // build hash set for list view
+    public void asceessPoint() {
+        List<Map<String, String>> employeeList = new ArrayList<Map<String, String>>();
+        Boolean isAccept = false;
+        try {
+            JSONObject jsonResponse = new JSONObject(jsonResult);
+            JSONArray jsonMainNode = jsonResponse.optJSONArray("klient");
 
+            for (int i = 0; i < jsonMainNode.length(); i++) {
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                String login = jsonChildNode.optString("email");
+                String haslo = jsonChildNode.optString("haslo");
 
+                if (loginBox.getText().toString().equals(login)& password.getText().toString().equals(haslo)){
+                    Log.v("Urzytkownik", loginBox.getText().toString()+" jest zalogowany");
+                    context =getApplicationContext();
+                    intent = new Intent(context, GeneralActivity.class );
+                    startActivity(intent);
+                    isAccept = true ;
+                }
+            }
+            if(isAccept==false) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Hasło lub login jest nie poprawne!", Toast.LENGTH_SHORT);
+                toast.show();
+                Log.v("Urzytkownik", loginBox.getText().toString()+" nie jest zalogowany");
+            }
+
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), "Error" + e.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
