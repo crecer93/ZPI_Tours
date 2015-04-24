@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+//test pusha Filip 2015-04-24
 public class GeneralActivity extends Activity {
 
     private String jsonResult;
