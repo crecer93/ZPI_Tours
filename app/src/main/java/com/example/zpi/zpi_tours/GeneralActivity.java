@@ -1,8 +1,13 @@
 package com.example.zpi.zpi_tours;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -17,6 +22,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,11 +41,16 @@ public class GeneralActivity extends Activity {
     private String jsonResult;
     private String url = "http://192.168.0.11/SerwerXampp/ZPI_Tours/wycieczki.php";
     private ListView listView;
+    final String LOG_TAG = "myLogs";
+    DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
         listView = (ListView) findViewById(R.id.listView1);
+        ContentValues cv = new ContentValues();
+        dbHelper = new DBHelper(this);
         accessWebService();
     }
 
@@ -94,28 +107,57 @@ public class GeneralActivity extends Activity {
 
     // build hash set for list view
     public void ListDrwaer() {
-        List<Map<String, String>> employeeList = new ArrayList<Map<String, String>>();
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+        Map<String, Object> m;
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
 
         try {
             JSONObject jsonResponse = new JSONObject(jsonResult);
             JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczki");
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
+                Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                String name = jsonChildNode.optString("id_wycieczki");
+
+                String id = jsonChildNode.optString("id_wycieczki");
+                String nazwa = jsonChildNode.optString("nazwa");
+                String dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
+                String cena  = jsonChildNode.optString("cena");
+
+                m = new HashMap<String, Object>();
+
+                m.put("id_w",id);
+                m.put ("nazwa",nazwa);
+                m.put ("cena", cena);
+                data.add(m);
 
 
-                String outPut = name;
-                employeeList.add(createEmployee("employees", outPut));
+                String outPut = nazwa + " "+dlugosc_trasy + " " + cena;
+
+
+                cv.put("nazwa", nazwa);
+                cv.put("id_w", id);
+
+                cv.put("cena",cena);
+                cv.put("dlugosc_trasy",dlugosc_trasy);
+                db.insert("wycieczki", null, cv);
             }
+
+
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error" + e.toString(),
                     Toast.LENGTH_SHORT).show();
         }
 
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this, employeeList,
-                android.R.layout.simple_list_item_1,
-                new String[] { "employees" }, new int[] { android.R.id.text1 });
+        String[] from = {  "nazwa" , "cena" };
+        int[] to = { R.id.tekst1, R.id.tekst2 };
+        // массив ID View-компонентов, в которые будут вставлять данные
+
+        // создаем адаптер
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this, data, R.layout.item,
+                from, to);
         listView.setAdapter(simpleAdapter);
     }
 
@@ -146,5 +188,30 @@ public class GeneralActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class DBHelper extends SQLiteOpenHelper {
+
+        public DBHelper(Context context) {
+            // конструктор суперкласса
+            super(context, "myDB", null, 1);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            Log.d(LOG_TAG, "--- onCreate database ---");
+            // создаем таблицу с полями
+            db.execSQL("create table wycieczki ("
+                    + "id integer primary key autoincrement"
+                    + "id_w integer"
+                    + "nazwa text,"
+                    + "cena text"
+                    +"dlugosc_trasy text" + ");");
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        }
     }
 }
