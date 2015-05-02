@@ -7,14 +7,35 @@
 
     tools:context="com.example.zpi.zpi_tours.GeneralActivity">
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Nazwa wycieczki"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Cena"
+        android:id="@+id/textView1"
+        android:layout_marginLeft="200dp" />
+
     <ListView
         android:id="@+id/listView1"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="30dp" >
+
     </ListView>
+
+
 
 
 </RelativeLayout>
