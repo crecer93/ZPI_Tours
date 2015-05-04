@@ -7,7 +7,6 @@
 
     tools:context="com.example.zpi.zpi_tours.GeneralActivity">
 
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,12 +27,41 @@
         android:id="@+id/listView1"
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
 
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp" >
 
     </ListView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temp - Dodaj użytkownika"
+        android:id="@+id/temp1"
+        android:layout_below="@id/listView1"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temp - aktualizuj użytkownika"
+        android:id="@+id/temp2"
+        android:layout_below="@id/temp1"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temp - Dodaj wycieczkę"
+        android:id="@+id/temp3"
+        android:layout_below="@id/temp2"
+        />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temp - aktualizuj wycieczkę"
+        android:id="@+id/temp4"
+        android:layout_below="@id/temp3"
+        />
 
 
 

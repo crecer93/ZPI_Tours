@@ -4,4 +4,18 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_general">GeneralActivity</string>
+    <string-array name="plec_array">
+        <item>-wybierz-</item>
+        <item>mężczyzna</item>
+        <item>kobieta</item>
+    </string-array>
+    <string-array name="trudnosc_array">
+        <item>łatwy</item>
+        <item>średni</item>
+        <item>trudny</item>
+    </string-array>
+    <string name="title_activity_insert_uzytkownik">Dodaj użytkownika</string>
+    <string name="title_activity_update_uzytkownik">Aktualizuj użytkownika</string>
+    <string name="title_activity_insert_wycieczka">Dodaj wycieczkę</string>
+    <string name="title_activity_update_wycieczka">Aktualizuj wycieczkę</string>
 </resources>
