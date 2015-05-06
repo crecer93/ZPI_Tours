@@ -6,18 +6,19 @@ $db_name="zpi_tours"; //replace with database name
  
 $con=mysql_connect("$host", "$username", "$password")or die("cannot connect"); 
 mysql_select_db("$db_name")or die("cannot select DB");
+$sql = "SELECT * FROM uzytkownicy"; 
 mysql_query("SET NAMES 'utf8' COLLATE 'utf8_polish_ci';");
 mysql_query("SET character_set_client = 'utf8'");
 mysql_query("SET character_set_results = 'utf8'");
 mysql_query("SET character_set_connection = 'utf8'");
 
-$sql = "SELECT  nazwa, dlugosc_trasy, cena FROM wycieczki"; 
+
 $result = mysql_query($sql);
 $json = array();
  
 if(mysql_num_rows($result)){
 	while($row=mysql_fetch_assoc($result)){
-		$json['wycieczki'][]=$row;
+		$json['uzytkownik'][]=$row;
 	}
 }
 mysql_close($con);
