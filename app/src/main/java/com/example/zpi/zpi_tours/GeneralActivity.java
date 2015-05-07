@@ -42,7 +42,7 @@ import java.util.Map;
 public class GeneralActivity extends Activity {
 
     private String jsonResult;
-    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/wycieczki.php";//192.168.0.11//10.0.2.2
+    private String url = "http://zpitours.za.pl/wycieczki.php";//192.168.0.11//10.0.2.2
     private ListView listView;
     final String LOG_TAG = "myLogs";
     DBHelper dbHelper;
@@ -160,28 +160,28 @@ public class GeneralActivity extends Activity {
                 Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
 
-                String id = jsonChildNode.optString("id_wycieczki");
+               // String id = jsonChildNode.optString("id_wycieczki");
                 String nazwa = jsonChildNode.optString("nazwa");
                 String dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
                 String cena  = jsonChildNode.optString("cena");
 
                 m = new HashMap<String, Object>();
 
-                m.put("id_w",id);
+               // m.put("id_w",id);
                 m.put ("nazwa",nazwa);
-                m.put ("cena", cena);
+                //m.put ("cena", cena);
                 data.add(m);
 
 
                 String outPut = nazwa + " "+dlugosc_trasy + " " + cena;
 
 
-                cv.put("nazwa", nazwa);
-                cv.put("id_w", id);
+               // cv.put("nazwa", nazwa);
+                //cv.put("id_w", id);
 
-                cv.put("cena",cena);
-                cv.put("dlugosc_trasy",dlugosc_trasy);
-                db.insert("wycieczki", null, cv);
+                //cv.put("cena",cena);
+                //cv.put("dlugosc_trasy",dlugosc_trasy);
+                //db.insert("wycieczki", null, cv);
             }
 
 
@@ -190,8 +190,8 @@ public class GeneralActivity extends Activity {
                     Toast.LENGTH_SHORT).show();
         }
 
-        String[] from = {  "nazwa" , "cena" };
-        int[] to = { R.id.tekst1, R.id.tekst2 };
+        String[] from = {  "nazwa" };
+        int[] to = { R.id.tekst1};
         // массив ID View-компонентов, в которые будут вставлять данные
 
         // создаем адаптер
