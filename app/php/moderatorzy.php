@@ -11,13 +11,13 @@ mysql_query("SET character_set_client = 'utf8'");
 mysql_query("SET character_set_results = 'utf8'");
 mysql_query("SET character_set_connection = 'utf8'");
 
-$sql = "SELECT  nazwa, dlugosc_trasy, cena FROM wycieczki"; 
+$sql = "SELECT id_uzytkownika, imie, nazwisko FROM uzytkownicy WHERE moderator = TRUE"; 
 $result = mysql_query($sql);
 $json = array();
  
 if(mysql_num_rows($result)){
 	while($row=mysql_fetch_assoc($result)){
-		$json['wycieczki'][]=$row;
+		$json['moderator'][]=$row;
 	}
 }
 mysql_close($con);

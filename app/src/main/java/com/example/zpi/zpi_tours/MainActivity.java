@@ -40,8 +40,8 @@ public class MainActivity extends Activity {
     Context context;
     Intent intent;
 
-    private String jsonResult;
-    private String url = "http://192.168.1.2/SerwerXampp/ZPI_Tours/login.php";
+    private String jsonResult = "";
+    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/login.php";//10.0.2.2//192.168.0.11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,8 @@ public class MainActivity extends Activity {
             catch (ClientProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
@@ -125,7 +127,7 @@ public class MainActivity extends Activity {
                 String haslo = jsonChildNode.optString("haslo");
 
                 if (loginBox.getText().toString().equals(login)& password.getText().toString().equals(haslo)){
-                    Log.v("Urzytkownik", loginBox.getText().toString()+" jest zalogowany");
+                    Log.v("Użytkownik", loginBox.getText().toString()+" jest zalogowany");
                     context =getApplicationContext();
                     intent = new Intent(context, GeneralActivity.class );
                     startActivity(intent);
@@ -136,11 +138,14 @@ public class MainActivity extends Activity {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Hasło lub login jest nie poprawne!", Toast.LENGTH_SHORT);
                 toast.show();
-                Log.v("Urzytkownik", loginBox.getText().toString()+" nie jest zalogowany");
+                Log.v("Użytkownik", loginBox.getText().toString()+" nie jest zalogowany");
             }
 
         } catch (JSONException e) {
-            Toast.makeText(getApplicationContext(), "Error" + e.toString(),
+            Toast.makeText(getApplicationContext(), "Error " + e.toString(),
+                    Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "Error " + e.toString(),
                     Toast.LENGTH_SHORT).show();
         }
     }

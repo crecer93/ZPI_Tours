@@ -3,6 +3,7 @@ package com.example.zpi.zpi_tours;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -39,10 +42,12 @@ import java.util.Map;
 public class GeneralActivity extends Activity {
 
     private String jsonResult;
-    private String url = "http://192.168.1.2/SerwerXampp/ZPI_Tours/wycieczki.php";
+    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/wycieczki.php";//192.168.0.11//10.0.2.2
     private ListView listView;
     final String LOG_TAG = "myLogs";
     DBHelper dbHelper;
+
+    Button temp1, temp2, temp3, temp4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,40 @@ public class GeneralActivity extends Activity {
         ContentValues cv = new ContentValues();
         dbHelper = new DBHelper(this);
         accessWebService();
+
+
+        temp1 = (Button)findViewById(R.id.temp1);
+        temp1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Context context =getApplicationContext();
+                Intent intent = new Intent(context, InsertUzytkownikActivity.class );
+                startActivity(intent);
+            }
+        });
+        temp2 = (Button)findViewById(R.id.temp2);
+        temp2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Context context =getApplicationContext();
+                Intent intent = new Intent(context, UpdateUzytkownikActivity.class );
+                startActivity(intent);
+            }
+        });
+        temp3 = (Button)findViewById(R.id.temp3);
+        temp3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Context context =getApplicationContext();
+                Intent intent = new Intent(context, InsertWycieczkaActivity.class );
+                startActivity(intent);
+            }
+        });
+        temp4 = (Button)findViewById(R.id.temp4);
+        temp4.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Context context =getApplicationContext();
+                Intent intent = new Intent(context, UpdateWycieczkaActivity.class );
+                startActivity(intent);
+            }
+        });
     }
 
     // Async Task to access the web
@@ -202,10 +241,10 @@ public class GeneralActivity extends Activity {
             Log.d(LOG_TAG, "--- onCreate database ---");
             // создаем таблицу с полями
             db.execSQL("create table wycieczki ("
-                    + "id integer primary key autoincrement"
-                    + "id_w integer"
+                    + "id integer primary key autoincrement,"
+                    + "id_w integer,"
                     + "nazwa text,"
-                    + "cena text"
+                    + "cena text,"
                     +"dlugosc_trasy text" + ");");
         }
 
