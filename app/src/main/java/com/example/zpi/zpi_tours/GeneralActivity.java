@@ -39,7 +39,7 @@ import java.util.Map;
 public class GeneralActivity extends Activity {
 
     private String jsonResult;
-    private String url = "http://192.168.0.11/SerwerXampp/ZPI_Tours/wycieczki.php";
+    private String url = "http://192.168.1.2/SerwerXampp/ZPI_Tours/wycieczki.php";
     private ListView listView;
     final String LOG_TAG = "myLogs";
     DBHelper dbHelper;

@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
     Intent intent;
 
     private String jsonResult;
-    private String url = "http://192.168.0.11/SerwerXampp/ZPI_Tours/login.php";
+    private String url = "http://192.168.1.2/SerwerXampp/ZPI_Tours/login.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
