@@ -35,11 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class InsertUzytkownikActivity extends Activity {
-
+public class RejestracjaUzytkownikaActivity extends Activity {
     Button buttonUtworz;
     EditText textBoxEmail;
     EditText textBoxHaslo;
+    EditText textBoxPowtorzHaslo;
     EditText textBoxImie;
     EditText textBoxNazwisko;
     Spinner spinnerPlec;
@@ -50,29 +50,44 @@ public class InsertUzytkownikActivity extends Activity {
     String valueMiasto = "";
 
     private String jsonResult = "";
-    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/insert-uzytkownik.php";//10.0.2.2//192.168.0.11
-    private String urlMiasta = "http://10.0.2.2/SerwerXampp/ZPI_Tours/miasta.php";//10.0.2.2//192.168.0.11
+    private String url = "http://zpitours.za.pl/insert-uzytkownik.php";//10.0.2.2//192.168.0.11
+    private String urlMiasta = "http://zpitours.za.pl/miasta.php";//10.0.2.2//192.168.0.11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_insert_uzytkownik);
 
-        buttonUtworz = (Button)findViewById(R.id.buttonUtworz);
-        textBoxEmail = (EditText)findViewById(R.id.textBoxEmail);
-        textBoxHaslo = (EditText)findViewById(R.id.textBoxHaslo);
-        textBoxImie = (EditText)findViewById(R.id.textBoxImie);
-        textBoxNazwisko = (EditText)findViewById(R.id.textBoxNazwisko);
-        spinnerPlec = (Spinner)findViewById(R.id.spinnerPlec);
-        spinnerMiasto = (Spinner)findViewById(R.id.spinnerMiasto);
-        checkBoxModerator = (CheckBox)findViewById(R.id.checkBoxModerator);
+        setContentView(R.layout.activity_rejestracja_uzytkownika);
+
+        buttonUtworz = (Button) findViewById(R.id.buttonUtworz);
+        textBoxEmail = (EditText) findViewById(R.id.textBoxEmail);
+        textBoxHaslo = (EditText) findViewById(R.id.textBoxHaslo);
+        textBoxPowtorzHaslo = (EditText) findViewById(R.id.textBoxPowtorzHaslo);
+        textBoxImie = (EditText) findViewById(R.id.textBoxImie);
+        textBoxNazwisko = (EditText) findViewById(R.id.textBoxNazwisko);
+        spinnerPlec = (Spinner) findViewById(R.id.spinnerPlec);
+        spinnerMiasto = (Spinner) findViewById(R.id.spinnerMiasto);
+        checkBoxModerator = (CheckBox) findViewById(R.id.checkBoxModerator);
 
         buttonUtworz.setOnClickListener(
                 new View.OnClickListener() {
-            public void onClick(View view) {
-                accessWebService();
-            }
-        });
+                    public void onClick(View view) {
+                        boolean danePoprawne = true;
+                        String temp_haslo = textBoxHaslo.getText().toString();
+                        String temp_powtorz_haslo = textBoxPowtorzHaslo.getText().toString();
+
+                        if(temp_haslo != "") {
+                            if(!temp_haslo.equals(temp_powtorz_haslo)) {
+                                danePoprawne = false;
+                                Toast.makeText(getApplicationContext(),
+                                        "Hasła się nie zgadzają.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        if(danePoprawne)
+                            accessWebService();
+                    }
+                });
 
         //zapełnienie Spinnera dla płci
         ArrayAdapter<CharSequence> adapterPlec = ArrayAdapter.createFromResource(this,
@@ -83,14 +98,14 @@ public class InsertUzytkownikActivity extends Activity {
         spinnerPlec.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
-                    int pos, long id) {
+                                               int pos, long id) {
                         valuePlec = Integer.toString((pos));
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
                         valuePlec = "";
                     }
-            }
+                }
         );
 
         //zapełnienie Spinnera dla miast
@@ -100,7 +115,7 @@ public class InsertUzytkownikActivity extends Activity {
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
                                                int pos, long id) {
-                        if(pos != 0)
+                        if (pos != 0)
                             valueMiasto = Integer.toString((pos));
                         else
                             valueMiasto = "";
@@ -111,6 +126,7 @@ public class InsertUzytkownikActivity extends Activity {
                     }
                 }
         );
+
 
         //wyczyszczenie jsonResult
         jsonResult = "";
@@ -124,26 +140,22 @@ public class InsertUzytkownikActivity extends Activity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(params[0]);
             try {
-                Log.v("Ping","doInBackground 0");
                 if(params[0].equals(url)) {
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(8);
                     nameValuePairs.add(new BasicNameValuePair("email", textBoxEmail.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("haslo", textBoxHaslo.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("imie", textBoxImie.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("nazwisko", textBoxNazwisko.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("plec", valuePlec));
-                    Log.v("Plec","wartość płci: "+valuePlec);
                     nameValuePairs.add(new BasicNameValuePair("id_miasta", valueMiasto));
-                    nameValuePairs.add(new BasicNameValuePair("moderator", (checkBoxModerator.isChecked() ? "1" : "0") ));
+                    nameValuePairs.add(new BasicNameValuePair("moderator", ""));
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 }
-                Log.v("Ping","doInBackground 1");
 
                 HttpResponse response = httpclient.execute(httppost);
-                Log.v("Ping","doInBackground 2");
                 jsonResult = inputStreamToString(
                         response.getEntity().getContent()).toString();
-                Log.v("Ping","jsonResult"+jsonResult);
+                Log.v("Ping", "jsonResult" + jsonResult);
             }
 
             catch (ClientProtocolException e) {
@@ -196,7 +208,7 @@ public class InsertUzytkownikActivity extends Activity {
             JSONObject jsonResponse = new JSONObject(jsonResult);
             String sukcesString = jsonResponse.optString("sukces");
 
-            boolean sukces = (sukcesString.equals("true") ? true : false);
+            boolean sukces = (sukcesString.equals("true"));
 
             if(sukces) {
                 String nazwa = textBoxImie.getText().toString()
@@ -220,7 +232,7 @@ public class InsertUzytkownikActivity extends Activity {
     public void accessMiasta() {
         JsonReadTask task = new JsonReadTask();
         // passes values for the urls string array
-        task.execute(new String[] { urlMiasta });
+        task.execute(new String[]{urlMiasta});
     }
 
     public void accessPointMiasta() {
@@ -235,11 +247,8 @@ public class InsertUzytkownikActivity extends Activity {
             Log.v("Ping","2");
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
-                Log.v("Ping","3");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                Log.v("Ping","4");
                 String miasto = jsonChildNode.optString("nazwa_miasta");
-                /***************************/Log.v("Miasto",miasto+" zostało wybrane");
 
                 listaMiast.add(miasto);
             }

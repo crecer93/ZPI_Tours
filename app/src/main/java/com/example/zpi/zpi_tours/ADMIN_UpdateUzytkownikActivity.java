@@ -1,7 +1,6 @@
 package com.example.zpi.zpi_tours;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UpdateUzytkownikActivity extends Activity {
+public class ADMIN_UpdateUzytkownikActivity extends Activity {
     Spinner spinnerUzytkownik;
     Button buttonUtworz;
     EditText textBoxEmail;
@@ -52,14 +51,14 @@ public class UpdateUzytkownikActivity extends Activity {
 
     private String jsonResult = "";
     private String jsonUzytkownicy = "";
-    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/update-uzytkownik.php";//10.0.2.2//192.168.0.11
-    private String urlMiasta = "http://10.0.2.2/SerwerXampp/ZPI_Tours/miasta.php";//10.0.2.2//192.168.0.11
-    private String urlUzytkownicy = "http://10.0.2.2/SerwerXampp/ZPI_Tours/uzytkownicy.php";//10.0.2.2//192.168.0.11
+    private String url = "http://zpitours.za.pl/update-uzytkownik.php";//10.0.2.2//192.168.0.11
+    private String urlMiasta = "http://zpitours.za.pl/miasta.php";//10.0.2.2//192.168.0.11
+    private String urlUzytkownicy = "http://zpitours.za.pl/uzytkownicy.php";//10.0.2.2//192.168.0.11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_uzytkownik);
+        setContentView(R.layout.ADMIN_activity_update_uzytkownik);
 
         spinnerUzytkownik = (Spinner)findViewById(R.id.spinnerUzytkownik);
         buttonUtworz = (Button)findViewById(R.id.buttonUtworz);
