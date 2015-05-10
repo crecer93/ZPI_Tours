@@ -1,8 +1,8 @@
 <?php
-$host="127.0.0.1"; //replace with database hostname 
-$username="root"; //replace with database username 
-$password=""; //replace with database password 
-$db_name="zpi_tours"; //replace with database name
+$host="mysql1.ph-hos.osemka.pl"; //replace with database hostname 
+$username="1430907338_f"; //replace with database username 
+$password="zpi2015"; //replace with database password 
+$db_name="1287631_zpitours"; //replace with database name
 
 error_reporting(E_ALL ^ E_DEPRECATED); 
 $con=mysql_connect("$host", "$username", "$password")or die("cannot connect"); 
