@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.BufferedReader;
@@ -35,7 +33,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -63,7 +60,7 @@ public class GeneralActivity extends Activity {
         temp1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
-                Intent intent = new Intent(context, InsertUzytkownikActivity.class );
+                Intent intent = new Intent(context, ADMIN_InsertUzytkownikActivity.class );
                 startActivity(intent);
             }
         });
@@ -71,7 +68,7 @@ public class GeneralActivity extends Activity {
         temp2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
-                Intent intent = new Intent(context, UpdateUzytkownikActivity.class );
+                Intent intent = new Intent(context, ADMIN_UpdateUzytkownikActivity.class );
                 startActivity(intent);
             }
         });
@@ -79,7 +76,7 @@ public class GeneralActivity extends Activity {
         temp3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
-                Intent intent = new Intent(context, InsertWycieczkaActivity.class );
+                Intent intent = new Intent(context, ADMIN_InsertWycieczkaActivity.class );
                 startActivity(intent);
             }
         });
@@ -87,7 +84,7 @@ public class GeneralActivity extends Activity {
         temp4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
-                Intent intent = new Intent(context, UpdateWycieczkaActivity.class );
+                Intent intent = new Intent(context, ADMIN_UpdateWycieczkaActivity.class );
                 startActivity(intent);
             }
         });
