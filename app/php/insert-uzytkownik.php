@@ -12,6 +12,7 @@ $plec = $_POST['plec'];//WA¯NE! P³eæ musi byæ 1 (mê¿czyzna) albo 2 (kobieta)
 $id_miasta = $_POST['id_miasta'];
 $moderator = $_POST['moderator'];
 
+error_reporting(E_ALL ^ E_DEPRECATED);
 $con=mysql_connect("$host", "$username", "$password")or die("cannot connect"); 
 mysql_select_db("$db_name")or die("cannot select DB");
 mysql_query("SET NAMES 'utf8' COLLATE 'utf8_polish_ci';");

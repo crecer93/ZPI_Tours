@@ -1,7 +1,6 @@
 package com.example.zpi.zpi_tours;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class UpdateUzytkownikActivity extends Activity {
-    Spinner spinnerUzytkownik;
+public class ADMIN_InsertUzytkownikActivity extends Activity {
+
     Button buttonUtworz;
     EditText textBoxEmail;
     EditText textBoxHaslo;
@@ -51,17 +50,14 @@ public class UpdateUzytkownikActivity extends Activity {
     String valueMiasto = "";
 
     private String jsonResult = "";
-    private String jsonUzytkownicy = "";
-    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/update-uzytkownik.php";//10.0.2.2//192.168.0.11
-    private String urlMiasta = "http://10.0.2.2/SerwerXampp/ZPI_Tours/miasta.php";//10.0.2.2//192.168.0.11
-    private String urlUzytkownicy = "http://10.0.2.2/SerwerXampp/ZPI_Tours/uzytkownicy.php";//10.0.2.2//192.168.0.11
+    private String url = "http://zpitours.za.pl/insert-uzytkownik.php";//10.0.2.2//192.168.0.11
+    private String urlMiasta = "http://zpitours.za.pl/miasta.php";//10.0.2.2//192.168.0.11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_uzytkownik);
+        setContentView(R.layout.admin_activity_insert_uzytkownik);
 
-        spinnerUzytkownik = (Spinner)findViewById(R.id.spinnerUzytkownik);
         buttonUtworz = (Button)findViewById(R.id.buttonUtworz);
         textBoxEmail = (EditText)findViewById(R.id.textBoxEmail);
         textBoxHaslo = (EditText)findViewById(R.id.textBoxHaslo);
@@ -73,10 +69,10 @@ public class UpdateUzytkownikActivity extends Activity {
 
         buttonUtworz.setOnClickListener(
                 new View.OnClickListener() {
-                    public void onClick(View view) {
-                        accessWebService();
-                    }
-                });
+            public void onClick(View view) {
+                accessWebService();
+            }
+        });
 
         //zapełnienie Spinnera dla płci
         ArrayAdapter<CharSequence> adapterPlec = ArrayAdapter.createFromResource(this,
@@ -87,14 +83,14 @@ public class UpdateUzytkownikActivity extends Activity {
         spinnerPlec.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
-                                               int pos, long id) {
+                    int pos, long id) {
                         valuePlec = Integer.toString((pos));
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
                         valuePlec = "";
                     }
-                }
+            }
         );
 
         //zapełnienie Spinnera dla miast
@@ -116,26 +112,6 @@ public class UpdateUzytkownikActivity extends Activity {
                 }
         );
 
-        //zapełnienie Spinnera dla uzytkowników
-        accessUzytkownicy();
-
-        spinnerUzytkownik.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    public void onItemSelected(AdapterView<?> parent, View view,
-                                               int pos, long id) {
-                        if(pos != 0) {
-                            Integer id_uzytkownika = Integer.parseInt((String) parent.getItemAtPosition(pos));
-                            if (id_uzytkownika != null)
-                                fillInFieldsForId(id_uzytkownika);
-                        }
-                    }
-
-                    public void onNothingSelected(AdapterView<?> parent) {
-
-                    }
-                }
-        );
-
         //wyczyszczenie jsonResult
         jsonResult = "";
     }
@@ -148,20 +124,23 @@ public class UpdateUzytkownikActivity extends Activity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(params[0]);
             try {
+                Log.v("Ping","doInBackground 0");
                 if(params[0].equals(url)) {
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(8);
-                    nameValuePairs.add(new BasicNameValuePair("id", spinnerUzytkownik.getSelectedItem().toString()));
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
                     nameValuePairs.add(new BasicNameValuePair("email", textBoxEmail.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("haslo", textBoxHaslo.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("imie", textBoxImie.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("nazwisko", textBoxNazwisko.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("plec", valuePlec));
+                    Log.v("Plec","wartość płci: "+valuePlec);
                     nameValuePairs.add(new BasicNameValuePair("id_miasta", valueMiasto));
                     nameValuePairs.add(new BasicNameValuePair("moderator", (checkBoxModerator.isChecked() ? "1" : "0") ));
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 }
+                Log.v("Ping","doInBackground 1");
 
                 HttpResponse response = httpclient.execute(httppost);
+                Log.v("Ping","doInBackground 2");
                 jsonResult = inputStreamToString(
                         response.getEntity().getContent()).toString();
                 Log.v("Ping","jsonResult"+jsonResult);
@@ -203,8 +182,6 @@ public class UpdateUzytkownikActivity extends Activity {
                 accessPointInsert();
             else if(lastUrl.equals(urlMiasta))
                 accessPointMiasta();
-            else if(lastUrl.equals(urlUzytkownicy))
-                accessPointUzytkownicy();
         }
     }// end async task
 
@@ -258,8 +235,11 @@ public class UpdateUzytkownikActivity extends Activity {
             Log.v("Ping","2");
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
+                Log.v("Ping","3");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                Log.v("Ping","4");
                 String miasto = jsonChildNode.optString("nazwa_miasta");
+                /***************************/Log.v("Miasto",miasto+" zostało wybrane");
 
                 listaMiast.add(miasto);
             }
@@ -275,101 +255,6 @@ public class UpdateUzytkownikActivity extends Activity {
                 android.R.layout.simple_spinner_item, listaMiast);
         adapterMiasto.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMiasto.setAdapter(adapterMiasto);
-    }
-
-    public void accessUzytkownicy() {
-        JsonReadTask task = new JsonReadTask();
-        // passes values for the urls string array
-        task.execute(new String[] { urlUzytkownicy });
-    }
-
-    public void accessPointUzytkownicy() {
-        jsonUzytkownicy = jsonResult;
-        List<String> listaUzytkownikow = new ArrayList<String>(1000);
-        listaUzytkownikow.add("-wybierz-");
-
-        try {
-            JSONObject jsonResponse = new JSONObject(jsonUzytkownicy);
-            JSONArray jsonMainNode = jsonResponse.optJSONArray("uzytkownik");
-
-            for (int i = 0; i < jsonMainNode.length(); i++) {
-                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                String id = jsonChildNode.optString("id_uzytkownika");
-
-                listaUzytkownikow.add(id);
-            }
-        } catch (JSONException e) {
-            Toast.makeText(getApplicationContext(), "Spinner miast: Error " + e.toString(),
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Spinner miast: Error " + e.toString(),
-                    Toast.LENGTH_LONG).show();
-        }
-
-        ArrayAdapter<String> adapterUzytkownik = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, listaUzytkownikow);
-        adapterUzytkownik.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        /**************/Log.v("Ping","adapterUzytkownik==null : "+(adapterUzytkownik==null));
-        /**************/Log.v("Ping","spinnerUzytkownik==null : "+(spinnerUzytkownik==null));
-        spinnerUzytkownik.setAdapter(adapterUzytkownik);
-    }
-
-    public void fillInFieldsForId(int id) {
-        boolean found = false;
-        try {
-            JSONObject jsonResponse = new JSONObject(jsonUzytkownicy);
-            JSONArray jsonMainNode = jsonResponse.optJSONArray("uzytkownik");
-
-            for (int i = 0; !found && i < jsonMainNode.length(); i++) {
-                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                String current_id = jsonChildNode.optString("id_uzytkownika");
-
-                if (Integer.parseInt(current_id) == id){
-                    found = true;
-
-                    String email = jsonChildNode.optString("email");
-                    String haslo = jsonChildNode.optString("haslo");
-                    String imie = jsonChildNode.optString("imie");
-                    String nazwisko = jsonChildNode.optString("nazwisko");
-                    String plec = jsonChildNode.optString("plec");
-                    String id_miasta = jsonChildNode.optString("id_miasta");
-                    String moderator = jsonChildNode.optString("moderator");
-
-                    int plec_pos = 0;
-
-                    if(plec.equals("mężczyzna"))
-                        plec_pos = 1;
-                    else if(plec.equals("kobieta"))
-                        plec_pos = 2;
-
-                    int miasto_pos;
-
-                    if(id_miasta.equals("null"))
-                        miasto_pos = 0;
-                    else
-                        miasto_pos = Integer.parseInt(id_miasta);
-
-                    textBoxEmail.setText(email);
-                    textBoxHaslo.setText("");
-                    textBoxImie.setText(imie);
-                    textBoxNazwisko.setText(nazwisko);
-                    spinnerPlec.setSelection(plec_pos, true);
-                    spinnerMiasto.setSelection(miasto_pos, true);
-                    checkBoxModerator.setChecked(moderator.equals("1"));
-                }
-            }
-            if(!found) {
-                Toast.makeText(getApplicationContext(), "Nie można znaleźć użytkownika o id "+id+".",
-                        Toast.LENGTH_LONG).show();
-            }
-
-        } catch (JSONException e) {
-            Toast.makeText(getApplicationContext(), "Error " + e.toString(),
-                    Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Error " + e.toString(),
-                    Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

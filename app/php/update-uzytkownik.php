@@ -25,6 +25,7 @@ $id_miasta = 100;
 $moderator = 0;
 */
 
+error_reporting(E_ALL ^ E_DEPRECATED);
 $con=mysql_connect("$host", "$username", "$password")or die("cannot connect"); 
 mysql_select_db("$db_name")or die("cannot select DB");
 mysql_query("SET NAMES 'utf8' COLLATE 'utf8_polish_ci';");
