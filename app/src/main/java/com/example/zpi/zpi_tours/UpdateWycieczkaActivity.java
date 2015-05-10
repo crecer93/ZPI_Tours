@@ -33,13 +33,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-/*Wywoływanie poprzez:
-    Intent intent = new Intent(context, AktualizujWycieczkeActivity.class);
-    intent.putExtra("id_wycieczki", [klucz główny wycieczki tutaj, jako String]);
-    startActivity(intent);
-*/
 
-public class AktualizujWycieczkeActivity extends Activity {
+public class UpdateWycieczkaActivity extends Activity {
+    Spinner spinnerIdWycieczki;
     Button buttonUtworz;
     EditText textBoxNazwa;
     EditText textBoxLiczbaMiejsc;
@@ -56,88 +52,104 @@ public class AktualizujWycieczkeActivity extends Activity {
     String valueModerator = "";
     List<String> listaModeratorow;
 
-    String id_wycieczki;
-
     private String jsonResult = "";
-    private String url = "http://zpitours.za.pl/update-wycieczka.php";//10.0.2.2//192.168.0.11
-    private String urlModeratorzy = "http://zpitours.za.pl/moderatorzy.php";//10.0.2.2//192.168.0.11
-    private String urlWycieczki = "http://zpitours.za.pl/wycieczka-pelna.php";
+    private String jsonWycieczki = "";
+    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/update-wycieczka.php";//10.0.2.2//192.168.0.11
+    private String urlModeratorzy = "http://10.0.2.2/SerwerXampp/ZPI_Tours/moderatorzy.php";//10.0.2.2//192.168.0.11
+    private String urlWycieczki = "http://10.0.2.2/SerwerXampp/ZPI_Tours/wycieczki-pelne.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_update_wycieczka);
 
-        id_wycieczki = getIntent().getStringExtra("id_wycieczki");
+        spinnerIdWycieczki = (Spinner)findViewById(R.id.spinnerIdWycieczki);
+        buttonUtworz = (Button)findViewById(R.id.buttonUtworz);
+        textBoxNazwa = (EditText)findViewById(R.id.textBoxNazwa);
+        textBoxLiczbaMiejsc = (EditText)findViewById(R.id.textBoxLiczbaMiejsc);
+        textBoxOpis = (EditText)findViewById(R.id.textBoxOpis);
+        textBoxDlugosc = (EditText)findViewById(R.id.textBoxDlugosc);
+        textBoxLokalizacja = (EditText)findViewById(R.id.textBoxLokalizacja);
+        textBoxDataPoczatku = (EditText)findViewById(R.id.textBoxDataPoczatku);
+        textBoxDataKonca = (EditText)findViewById(R.id.textBoxDataKonca);
+        textBoxCena = (EditText)findViewById(R.id.textBoxCena);
+        spinnerTrudnosc = (Spinner)findViewById(R.id.spinnerTrudnosc);
+        spinnerModerator = (Spinner)findViewById(R.id.spinnerModerator);
 
-        if(id_wycieczki == null) {
-            Toast.makeText(getApplicationContext(),
-                    "Wywołano tę aktywność bez podania klucza wycieczki w intencji.", Toast.LENGTH_LONG).show();
-        } else {
-            setContentView(R.layout.activity_aktualizuj_wycieczke);
-
-            buttonUtworz = (Button) findViewById(R.id.buttonUtworz);
-            textBoxNazwa = (EditText) findViewById(R.id.textBoxNazwa);
-            textBoxLiczbaMiejsc = (EditText) findViewById(R.id.textBoxLiczbaMiejsc);
-            textBoxOpis = (EditText) findViewById(R.id.textBoxOpis);
-            textBoxDlugosc = (EditText) findViewById(R.id.textBoxDlugosc);
-            textBoxLokalizacja = (EditText) findViewById(R.id.textBoxLokalizacja);
-            textBoxDataPoczatku = (EditText) findViewById(R.id.textBoxDataPoczatku);
-            textBoxDataKonca = (EditText) findViewById(R.id.textBoxDataKonca);
-            textBoxCena = (EditText) findViewById(R.id.textBoxCena);
-            spinnerTrudnosc = (Spinner) findViewById(R.id.spinnerTrudnosc);
-            spinnerModerator = (Spinner) findViewById(R.id.spinnerModerator);
-
-            buttonUtworz.setOnClickListener(
-                    new View.OnClickListener() {
-                        public void onClick(View view) {
-                            accessWebService();
-                        }
-                    });
-
-            //zapełnienie Spinnera dla trudności
-            ArrayAdapter<CharSequence> adapterTrudnosc = ArrayAdapter.createFromResource(this,
-                    R.array.trudnosc_array, android.R.layout.simple_spinner_item);
-            adapterTrudnosc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinnerTrudnosc.setAdapter(adapterTrudnosc);
-
-            spinnerTrudnosc.setOnItemSelectedListener(
-                    new AdapterView.OnItemSelectedListener() {
-                        public void onItemSelected(AdapterView<?> parent, View view,
-                                                   int pos, long id) {
-                            valueTrudnosc = Integer.toString((pos + 1));
-                        }
-
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
+        buttonUtworz.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View view) {
+                        accessWebService();
                     }
-            );
+                });
 
-            //zapełnienie Spinnera dla moderatorów
-            accessModeratorzy();
+        //zapełnienie Spinnera dla trudności
+        ArrayAdapter<CharSequence> adapterTrudnosc = ArrayAdapter.createFromResource(this,
+                R.array.trudnosc_array, android.R.layout.simple_spinner_item);
+        adapterTrudnosc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTrudnosc.setAdapter(adapterTrudnosc);
 
-            spinnerModerator.setOnItemSelectedListener(
-                    new AdapterView.OnItemSelectedListener() {
-                        public void onItemSelected(AdapterView<?> parent, View view,
-                                                   int pos, long id) {
-                            if (pos != 0) {
-                                valueModerator = (String) parent.getItemAtPosition(pos);
-                            } else {
-                                valueModerator = "";
-                            }
-                        }
+        spinnerTrudnosc.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+                        valueTrudnosc = Integer.toString((pos+1));
+                    }
 
-                        public void onNothingSelected(AdapterView<?> parent) {
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                }
+        );
+
+        //zapełnienie Spinnera dla moderatorów
+        accessModeratorzy();
+
+        spinnerModerator.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+                        if(pos != 0) {
+                            valueModerator = (String) parent.getItemAtPosition(pos);
+                        } else {
                             valueModerator = "";
                         }
                     }
-            );
 
-            accessWycieczki();
+                    public void onNothingSelected(AdapterView<?> parent) {
+                        valueModerator = "";
+                    }
+                }
+        );
 
-            //wyczyszczenie jsonResult
-            jsonResult = "";
-        }
+        //zapełnienie Spinnera dla wycieczek
+        /********************************/Log.v("Ping","1");
+        accessWycieczki();
+        /********************************/Log.v("Ping","2");
+
+        spinnerIdWycieczki.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int pos, long id) {
+                        /********************************/Log.v("Ping","onItemSelected");
+                        if(pos != 0) {
+                            /********************************/Log.v("Ping","onItemSelected if()");
+                            Integer id_wycieczki = Integer.parseInt((String) parent.getItemAtPosition(pos));
+                            /********************************/Log.v("Ping","onItemSelected przed if() if()");
+                            if (id_wycieczki != null)
+                            /********************************/Log.v("Ping","onItemSelected if() if()");
+                                fillInFieldsForId(id_wycieczki);
+                        }
+                    }
+
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                }
+        );
+
+        //wyczyszczenie jsonResult
+        jsonResult = "";
     }
 
     private class JsonReadTask extends AsyncTask<String, Void, String> {
@@ -150,7 +162,7 @@ public class AktualizujWycieczkeActivity extends Activity {
             try {
                 if(params[0].equals(url)) {
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(10);
-                    nameValuePairs.add(new BasicNameValuePair("id_wycieczki", id_wycieczki));
+                    nameValuePairs.add(new BasicNameValuePair("id_wycieczki", spinnerIdWycieczki.getSelectedItem().toString()));
                     nameValuePairs.add(new BasicNameValuePair("nazwa", textBoxNazwa.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("liczba_miejsc", textBoxLiczbaMiejsc.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("opis", textBoxOpis.getText().toString()));
@@ -161,10 +173,6 @@ public class AktualizujWycieczkeActivity extends Activity {
                     nameValuePairs.add(new BasicNameValuePair("data_konca", textBoxDataKonca.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("cena", textBoxCena.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("id_moderatora", valueModerator));
-                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                } else if(params[0].equals(urlWycieczki)) {
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                    nameValuePairs.add(new BasicNameValuePair("id_wycieczki", id_wycieczki));
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 }
 
@@ -215,7 +223,7 @@ public class AktualizujWycieczkeActivity extends Activity {
     public void accessWebService() {
         JsonReadTask task = new JsonReadTask();
         // passes values for the urls string array
-        task.execute(url);
+        task.execute(new String[] { url });
     }
 
     public void accessPointInsert() {
@@ -223,7 +231,7 @@ public class AktualizujWycieczkeActivity extends Activity {
             JSONObject jsonResponse = new JSONObject(jsonResult);
             String sukcesString = jsonResponse.optString("sukces");
 
-            boolean sukces = (sukcesString.equals("true"));
+            boolean sukces = (sukcesString.equals("true") ? true : false);
 
             if(sukces) {
                 String nazwa = textBoxNazwa.getText().toString()
@@ -249,7 +257,7 @@ public class AktualizujWycieczkeActivity extends Activity {
     public void accessModeratorzy() {
         JsonReadTask task = new JsonReadTask();
         // passes values for the urls string array
-        task.execute(urlModeratorzy);
+        task.execute(new String[] { urlModeratorzy });
     }
 
     public void accessPointModeratorzy() {
@@ -285,55 +293,24 @@ public class AktualizujWycieczkeActivity extends Activity {
     public void accessWycieczki() {
         JsonReadTask task = new JsonReadTask();
         // passes values for the urls string array
-        task.execute(urlWycieczki);
+        task.execute(new String[] { urlWycieczki });
     }
 
     public void accessPointWycieczki() {
+        jsonWycieczki = jsonResult;
+        List<String> listaWycieczek = new ArrayList<String>(1000);
+        listaWycieczek.add("-wybierz-");
+
         try {
-            JSONObject jsonResponse = new JSONObject(jsonResult);
+            JSONObject jsonResponse = new JSONObject(jsonWycieczki);
             JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczka");
 
-            JSONObject jsonChildNode = jsonMainNode.getJSONObject(0);
+            for (int i = 0; i < jsonMainNode.length(); i++) {
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                String id = jsonChildNode.optString("id_wycieczki");
 
-            String liczba_miejsc = jsonChildNode.optString("liczba_miejsc");
-            String nazwa = jsonChildNode.optString("nazwa");
-            String opis = jsonChildNode.optString("opis");
-            String dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
-            String poziom_trudnosci = jsonChildNode.optString("poziom_trudnosci");
-            String lokalizacja = jsonChildNode.optString("lokalizacja");
-            String data_poczatku = jsonChildNode.optString("data_poczatku");
-            String data_konca = jsonChildNode.optString("data_konca");
-            String cena = jsonChildNode.optString("cena");
-            String id_moderatora = jsonChildNode.optString("id_moderatora");
-
-            int trudnosc_pos = 0;
-
-            if(poziom_trudnosci.equals("łatwy"))
-                trudnosc_pos = 1;
-            else if(poziom_trudnosci.equals("średni"))
-                trudnosc_pos = 2;
-            else if(poziom_trudnosci.equals("trudny"))
-                trudnosc_pos = 2;
-
-            int moderator_pos = 0;
-
-            for(int j = 0; moderator_pos == 0 && j < listaModeratorow.size(); j++) {
-                if(listaModeratorow.get(j).equals(id_moderatora)) {
-                    moderator_pos = j;
-                }
+                listaWycieczek.add(id);
             }
-
-            textBoxLiczbaMiejsc.setText(liczba_miejsc);
-            textBoxNazwa.setText(nazwa);
-            textBoxOpis.setText(opis);
-            textBoxDlugosc.setText(dlugosc_trasy);
-            spinnerTrudnosc.setSelection(trudnosc_pos, true);
-            textBoxLokalizacja.setText(lokalizacja);
-            textBoxDataPoczatku.setText(data_poczatku);
-            textBoxDataKonca.setText(data_konca);
-            textBoxCena.setText(cena);
-            spinnerModerator.setSelection(moderator_pos, true);
-
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Spinner miast: Error " + e.toString(),
@@ -342,6 +319,82 @@ public class AktualizujWycieczkeActivity extends Activity {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Spinner miast: Error " + e.toString(),
                     Toast.LENGTH_LONG).show();
+        }
+
+        ArrayAdapter<String> adapterWycieczka = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, listaWycieczek);
+        adapterWycieczka.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        /**************/Log.v("Ping","adapterWycieczka==null : "+(adapterWycieczka==null));
+        /**************/Log.v("Ping","spinnerUzytkownik==null : "+(spinnerIdWycieczki==null));
+        spinnerIdWycieczki.setAdapter(adapterWycieczka);
+    }
+
+    public void fillInFieldsForId(int id) {
+        boolean found = false;
+        try {
+            JSONObject jsonResponse = new JSONObject(jsonWycieczki);
+            JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczka");
+
+            for (int i = 0; !found && i < jsonMainNode.length(); i++) {
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                String current_id = jsonChildNode.optString("id_wycieczki");
+
+                if (Integer.parseInt(current_id) == id){
+                    found = true;
+
+                    String liczba_miejsc = jsonChildNode.optString("liczba_miejsc");
+                    String nazwa = jsonChildNode.optString("nazwa");
+                    String opis = jsonChildNode.optString("opis");
+                    String dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
+                    String poziom_trudnosci = jsonChildNode.optString("poziom_trudnosci");
+                    String lokalizacja = jsonChildNode.optString("lokalizacja");
+                    String data_poczatku = jsonChildNode.optString("data_poczatku");
+                    String data_konca = jsonChildNode.optString("data_konca");
+                    String cena = jsonChildNode.optString("cena");
+                    String id_moderatora = jsonChildNode.optString("id_moderatora");
+
+                    int trudnosc_pos = 0;
+
+                    if(poziom_trudnosci.equals("łatwy"))
+                        trudnosc_pos = 1;
+                    else if(poziom_trudnosci.equals("średni"))
+                        trudnosc_pos = 2;
+                    else if(poziom_trudnosci.equals("trudny"))
+                        trudnosc_pos = 2;
+
+                    int moderator_pos = 0;
+
+                    for(int j = 0; moderator_pos == 0 && j < listaModeratorow.size(); j++) {
+                        if(listaModeratorow.get(j).equals(id_moderatora)) {
+                            moderator_pos = j;
+                        }
+                    }
+
+                    textBoxLiczbaMiejsc.setText(liczba_miejsc);
+                    textBoxNazwa.setText(nazwa);
+                    textBoxOpis.setText(opis);
+                    textBoxDlugosc.setText(dlugosc_trasy);
+                    spinnerTrudnosc.setSelection(trudnosc_pos, true);
+                    textBoxLokalizacja.setText(lokalizacja);
+                    textBoxDataPoczatku.setText(data_poczatku);
+                    textBoxDataKonca.setText(data_konca);
+                    textBoxCena.setText(cena);
+                    spinnerModerator.setSelection(moderator_pos, true);
+                }
+            }
+            if(!found) {
+                Toast.makeText(getApplicationContext(), "Nie można znaleźć użytkownika o id "+id+".",
+                        Toast.LENGTH_LONG).show();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error " + e.toString(),
+                    Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error " + e.toString(),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

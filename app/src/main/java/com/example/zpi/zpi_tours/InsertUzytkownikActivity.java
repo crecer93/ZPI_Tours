@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -34,85 +35,79 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ADMIN_InsertWycieczkaActivity extends Activity {
-    Button buttonUtworz;
-    EditText textBoxNazwa;
-    EditText textBoxLiczbaMiejsc;
-    EditText textBoxOpis;
-    EditText textBoxDlugosc;
-    EditText textBoxLokalizacja;
-    EditText textBoxDataPoczatku;
-    EditText textBoxDataKonca;
-    EditText textBoxCena;
-    Spinner spinnerTrudnosc;
-    Spinner spinnerModerator;
+public class InsertUzytkownikActivity extends Activity {
 
-    String valueTrudnosc = "";
-    String valueModerator = "";
+    Button buttonUtworz;
+    EditText textBoxEmail;
+    EditText textBoxHaslo;
+    EditText textBoxImie;
+    EditText textBoxNazwisko;
+    Spinner spinnerPlec;
+    Spinner spinnerMiasto;
+    CheckBox checkBoxModerator;
+
+    String valuePlec = "";
+    String valueMiasto = "";
 
     private String jsonResult = "";
-    private String url = "http://zpitours.za.pl/insert-wycieczka.php";//10.0.2.2//192.168.0.11
-    private String urlModeratorzy = "http://zpitours.za.pl/moderatorzy.php";//10.0.2.2//192.168.0.11
+    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/insert-uzytkownik.php";//10.0.2.2//192.168.0.11
+    private String urlMiasta = "http://10.0.2.2/SerwerXampp/ZPI_Tours/miasta.php";//10.0.2.2//192.168.0.11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.admin_activity_insert_wycieczka);
+        setContentView(R.layout.activity_insert_uzytkownik);
 
         buttonUtworz = (Button)findViewById(R.id.buttonUtworz);
-        textBoxNazwa = (EditText)findViewById(R.id.textBoxNazwa);
-        textBoxLiczbaMiejsc = (EditText)findViewById(R.id.textBoxLiczbaMiejsc);
-        textBoxOpis = (EditText)findViewById(R.id.textBoxOpis);
-        textBoxDlugosc = (EditText)findViewById(R.id.textBoxDlugosc);
-        textBoxLokalizacja = (EditText)findViewById(R.id.textBoxLokalizacja);
-        textBoxDataPoczatku = (EditText)findViewById(R.id.textBoxDataPoczatku);
-        textBoxDataKonca = (EditText)findViewById(R.id.textBoxDataKonca);
-        textBoxCena = (EditText)findViewById(R.id.textBoxCena);
-        spinnerTrudnosc = (Spinner)findViewById(R.id.spinnerTrudnosc);
-        spinnerModerator = (Spinner)findViewById(R.id.spinnerModerator);
+        textBoxEmail = (EditText)findViewById(R.id.textBoxEmail);
+        textBoxHaslo = (EditText)findViewById(R.id.textBoxHaslo);
+        textBoxImie = (EditText)findViewById(R.id.textBoxImie);
+        textBoxNazwisko = (EditText)findViewById(R.id.textBoxNazwisko);
+        spinnerPlec = (Spinner)findViewById(R.id.spinnerPlec);
+        spinnerMiasto = (Spinner)findViewById(R.id.spinnerMiasto);
+        checkBoxModerator = (CheckBox)findViewById(R.id.checkBoxModerator);
 
         buttonUtworz.setOnClickListener(
                 new View.OnClickListener() {
-                    public void onClick(View view) {
-                        accessWebService();
-                    }
-                });
+            public void onClick(View view) {
+                accessWebService();
+            }
+        });
 
-        //zapełnienie Spinnera dla trudności
-        ArrayAdapter<CharSequence> adapterTrudnosc = ArrayAdapter.createFromResource(this,
-                R.array.trudnosc_array, android.R.layout.simple_spinner_item);
-        adapterTrudnosc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerTrudnosc.setAdapter(adapterTrudnosc);
+        //zapełnienie Spinnera dla płci
+        ArrayAdapter<CharSequence> adapterPlec = ArrayAdapter.createFromResource(this,
+                R.array.plec_array, android.R.layout.simple_spinner_item);
+        adapterPlec.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPlec.setAdapter(adapterPlec);
 
-        spinnerTrudnosc.setOnItemSelectedListener(
+        spinnerPlec.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
-                                               int pos, long id) {
-                        valueTrudnosc = Integer.toString((pos+1));
+                    int pos, long id) {
+                        valuePlec = Integer.toString((pos));
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-
+                        valuePlec = "";
                     }
-                }
+            }
         );
 
-        //zapełnienie Spinnera dla moderatorów
-        accessModeratorzy();
+        //zapełnienie Spinnera dla miast
+        accessMiasta();
 
-        spinnerModerator.setOnItemSelectedListener(
+        spinnerMiasto.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> parent, View view,
                                                int pos, long id) {
-                        if(pos != 0) {
-                            valueModerator = (String) parent.getItemAtPosition(pos);
-                        } else {
-                            valueModerator = "";
-                        }
+                        if(pos != 0)
+                            valueMiasto = Integer.toString((pos));
+                        else
+                            valueMiasto = "";
                     }
 
                     public void onNothingSelected(AdapterView<?> parent) {
-                        valueModerator = "";
+                        valueMiasto = "";
                     }
                 }
         );
@@ -129,32 +124,36 @@ public class ADMIN_InsertWycieczkaActivity extends Activity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(params[0]);
             try {
+                Log.v("Ping","doInBackground 0");
                 if(params[0].equals(url)) {
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(7);
-                    nameValuePairs.add(new BasicNameValuePair("nazwa", textBoxNazwa.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("liczba_miejsc", textBoxLiczbaMiejsc.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("opis", textBoxOpis.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("dlugosc_trasy", textBoxDlugosc.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("poziom_trudnosci", valueTrudnosc));
-                    nameValuePairs.add(new BasicNameValuePair("lokalizacja", textBoxLokalizacja.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("data_poczatku", textBoxDataPoczatku.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("data_konca", textBoxDataKonca.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("cena", textBoxCena.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("id_moderatora", valueModerator));
+                    nameValuePairs.add(new BasicNameValuePair("email", textBoxEmail.getText().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("haslo", textBoxHaslo.getText().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("imie", textBoxImie.getText().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("nazwisko", textBoxNazwisko.getText().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("plec", valuePlec));
+                    Log.v("Plec","wartość płci: "+valuePlec);
+                    nameValuePairs.add(new BasicNameValuePair("id_miasta", valueMiasto));
+                    nameValuePairs.add(new BasicNameValuePair("moderator", (checkBoxModerator.isChecked() ? "1" : "0") ));
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 }
+                Log.v("Ping","doInBackground 1");
 
                 HttpResponse response = httpclient.execute(httppost);
+                Log.v("Ping","doInBackground 2");
                 jsonResult = inputStreamToString(
                         response.getEntity().getContent()).toString();
                 Log.v("Ping","jsonResult"+jsonResult);
             }
 
             catch (ClientProtocolException e) {
+                Log.v("Ping","ClientProtocolExecption");
                 e.printStackTrace();
             } catch (IOException e) {
+                Log.v("Ping","IOException");
                 e.printStackTrace();
             } catch (Exception e) {
+                Log.v("Ping","Other exception");
                 e.printStackTrace();
             }
             return null;
@@ -181,8 +180,8 @@ public class ADMIN_InsertWycieczkaActivity extends Activity {
         protected void onPostExecute(String result) {
             if(lastUrl.equals(url))
                 accessPointInsert();
-            else if(lastUrl.equals(urlModeratorzy))
-                accessPointModeratorzy();
+            else if(lastUrl.equals(urlMiasta))
+                accessPointMiasta();
         }
     }// end async task
 
@@ -200,10 +199,10 @@ public class ADMIN_InsertWycieczkaActivity extends Activity {
             boolean sukces = (sukcesString.equals("true") ? true : false);
 
             if(sukces) {
-                String nazwa = textBoxNazwa.getText().toString()
-                        + " do " + textBoxLokalizacja.getText().toString();
+                String nazwa = textBoxImie.getText().toString()
+                        + " " + textBoxNazwisko.getText().toString();
                 Toast.makeText(getApplicationContext(),
-                        "Wycieczka " + nazwa + " została pomyślnie dodana.", Toast.LENGTH_LONG).show();
+                        "Użytkownik " + nazwa + " został pomyślnie dodany.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(),
                         "Dodanie nie powiodło się.", Toast.LENGTH_LONG).show();
@@ -218,25 +217,31 @@ public class ADMIN_InsertWycieczkaActivity extends Activity {
     }
 
     //accessMiasta()->JsonReadTask.doBackground()->JSonReadTask.postExecute()->accessPointMiasta()
-    public void accessModeratorzy() {
+    public void accessMiasta() {
         JsonReadTask task = new JsonReadTask();
         // passes values for the urls string array
-        task.execute(new String[] { urlModeratorzy });
+        task.execute(new String[] { urlMiasta });
     }
 
-    public void accessPointModeratorzy() {
-        List<String> listaModeratorow = new ArrayList<String>(100);
-        listaModeratorow.add("-wybierz-");
+    public void accessPointMiasta() {
+        List<String> listaMiast = new ArrayList<String>(1000);
+        listaMiast.add("-wybierz-");
 
         try {
+            Log.v("Ping","0");
             JSONObject jsonResponse = new JSONObject(jsonResult);
-            JSONArray jsonMainNode = jsonResponse.optJSONArray("moderator");
+            Log.v("Ping","1");
+            JSONArray jsonMainNode = jsonResponse.optJSONArray("miasto");
+            Log.v("Ping","2");
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
+                Log.v("Ping","3");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                String miasto = jsonChildNode.optString("id_uzytkownika");
+                Log.v("Ping","4");
+                String miasto = jsonChildNode.optString("nazwa_miasta");
+                /***************************/Log.v("Miasto",miasto+" zostało wybrane");
 
-                listaModeratorow.add(miasto);
+                listaMiast.add(miasto);
             }
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Spinner miast: Error " + e.toString(),
@@ -246,10 +251,10 @@ public class ADMIN_InsertWycieczkaActivity extends Activity {
                     Toast.LENGTH_LONG).show();
         }
 
-        ArrayAdapter<String> adapterModerator = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, listaModeratorow);
-        adapterModerator.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerModerator.setAdapter(adapterModerator);
+        ArrayAdapter<String> adapterMiasto = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, listaMiast);
+        adapterMiasto.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMiasto.setAdapter(adapterMiasto);
     }
 
     @Override

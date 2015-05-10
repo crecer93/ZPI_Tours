@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class DodajWycieczkeActivity extends Activity {
+public class InsertWycieczkaActivity extends Activity {
     Button buttonUtworz;
     EditText textBoxNazwa;
     EditText textBoxLiczbaMiejsc;
@@ -51,13 +52,13 @@ public class DodajWycieczkeActivity extends Activity {
     String valueModerator = "";
 
     private String jsonResult = "";
-    private String url = "http://zpitours.za.pl/insert-wycieczka.php";//10.0.2.2//192.168.0.11
-    private String urlModeratorzy = "http://zpitours.za.pl/moderatorzy.php";//10.0.2.2//192.168.0.11
+    private String url = "http://10.0.2.2/SerwerXampp/ZPI_Tours/insert-wycieczka.php";//10.0.2.2//192.168.0.11
+    private String urlModeratorzy = "http://10.0.2.2/SerwerXampp/ZPI_Tours/moderatorzy.php";//10.0.2.2//192.168.0.11
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dodaj_wycieczke);
+        setContentView(R.layout.activity_insert_wycieczka);
 
         buttonUtworz = (Button)findViewById(R.id.buttonUtworz);
         textBoxNazwa = (EditText)findViewById(R.id.textBoxNazwa);
@@ -78,7 +79,7 @@ public class DodajWycieczkeActivity extends Activity {
                     }
                 });
 
-        //zape≥nienie Spinnera dla trudnoúci
+        //zape≈Çnienie Spinnera dla trudno≈õci
         ArrayAdapter<CharSequence> adapterTrudnosc = ArrayAdapter.createFromResource(this,
                 R.array.trudnosc_array, android.R.layout.simple_spinner_item);
         adapterTrudnosc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -97,7 +98,7 @@ public class DodajWycieczkeActivity extends Activity {
                 }
         );
 
-        //zape≥nienie Spinnera dla moderatorÛw
+        //zape≈Çnienie Spinnera dla moderator√≥w
         accessModeratorzy();
 
         spinnerModerator.setOnItemSelectedListener(
@@ -147,7 +148,7 @@ public class DodajWycieczkeActivity extends Activity {
                 HttpResponse response = httpclient.execute(httppost);
                 jsonResult = inputStreamToString(
                         response.getEntity().getContent()).toString();
-                Log.v("Ping", "jsonResult" + jsonResult);
+                Log.v("Ping","jsonResult"+jsonResult);
             }
 
             catch (ClientProtocolException e) {
@@ -203,10 +204,10 @@ public class DodajWycieczkeActivity extends Activity {
                 String nazwa = textBoxNazwa.getText().toString()
                         + " do " + textBoxLokalizacja.getText().toString();
                 Toast.makeText(getApplicationContext(),
-                        "Wycieczka " + nazwa + " zosta≥a pomyúlnie dodana.", Toast.LENGTH_LONG).show();
+                        "Wycieczka " + nazwa + " zosta≈Ça pomy≈õlnie dodana.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(),
-                        "Dodanie nie powiod≥o siÍ.", Toast.LENGTH_LONG).show();
+                        "Dodanie nie powiod≈Ço siƒô.", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error " + e.toString(),

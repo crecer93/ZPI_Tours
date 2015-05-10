@@ -9,11 +9,12 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission
+
+    <android:uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
 
@@ -36,40 +37,20 @@
             android:label="@string/title_activity_general" >
         </activity>
         <activity
-            android:name=".ADMIN_InsertUzytkownikActivity"
+            android:name=".InsertUzytkownikActivity"
             android:label="@string/title_activity_insert_uzytkownik" >
         </activity>
         <activity
-            android:name=".ADMIN_UpdateUzytkownikActivity"
+            android:name=".UpdateUzytkownikActivity"
             android:label="@string/title_activity_update_uzytkownik" >
         </activity>
         <activity
-            android:name=".ADMIN_InsertWycieczkaActivity"
+            android:name=".InsertWycieczkaActivity"
             android:label="@string/title_activity_insert_wycieczka" >
         </activity>
         <activity
-            android:name=".ADMIN_UpdateWycieczkaActivity"
+            android:name=".UpdateWycieczkaActivity"
             android:label="@string/title_activity_update_wycieczka" >
-        </activity>
-        <activity
-            android:name=".AktualizujWycieczkeActivity"
-            android:label="@string/title_activity_aktualizuj_wycieczke"
-            android:parentActivityName=".GeneralActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.zpi.zpi_tours.GeneralActivity" />
-        </activity>
-        <activity
-            android:name=".AktualizujUzytkownikaActivity"
-            android:label="@string/title_activity_aktualizuj_uzytkownika" >
-        </activity>
-        <activity
-            android:name=".RejestracjaUzytkownikaActivity"
-            android:label="@string/title_activity_rejestracja_uzytkownika" >
-        </activity>
-        <activity
-            android:name=".DodajWycieczkeActivity"
-            android:label="@string/title_activity_dodaj_wycieczke" >
         </activity>
     </application>
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Korona Europy</string>
+    <string name="app_name">ZPI_Tours</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -14,12 +14,8 @@
         <item>średni</item>
         <item>trudny</item>
     </string-array>
-    <string name="title_activity_insert_uzytkownik">ADMIN Dodaj użytkownika</string>
-    <string name="title_activity_update_uzytkownik">ADMIN Aktualizuj użytkownika</string>
-    <string name="title_activity_insert_wycieczka">ADMIN Dodaj wycieczkę</string>
-    <string name="title_activity_update_wycieczka">ADMIN Aktualizuj wycieczkę</string>
-    <string name="title_activity_aktualizuj_wycieczke">Aktualizuj wycieczkę</string>
-    <string name="title_activity_aktualizuj_uzytkownika">Dane osobowe</string>
-    <string name="title_activity_rejestracja_uzytkownika">Rejestracja</string>
-    <string name="title_activity_dodaj_wycieczke">DodajWycieczkeActivity</string>
+    <string name="title_activity_insert_uzytkownik">Dodaj użytkownika</string>
+    <string name="title_activity_update_uzytkownik">Aktualizuj użytkownika</string>
+    <string name="title_activity_insert_wycieczka">Dodaj wycieczkę</string>
+    <string name="title_activity_update_wycieczka">Aktualizuj wycieczkę</string>
 </resources>
