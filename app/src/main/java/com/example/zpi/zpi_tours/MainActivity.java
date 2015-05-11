@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,11 @@ public class MainActivity extends Activity {
     Context context;
     Intent intent;
 
+
     private String jsonResult = "";
     private String url = "http://zpitours.za.pl/login.php";//10.0.2.2//192.168.0.11
+   // private String url = "http://10.0.2.2/SerwerXampp//ZPI_Tours/login.php";//10.0.2.2//192.168.0.11
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

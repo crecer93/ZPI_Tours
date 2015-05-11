@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -33,18 +35,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 
-public class GeneralActivity extends Activity {
+public class GeneralActivity extends Activity  {
 
     private String jsonResult;
     private String url = "http://zpitours.za.pl/wycieczki.php";//192.168.0.11//10.0.2.2
     private ListView listView;
     final String LOG_TAG = "myLogs";
-    DBHelper dbHelper;
-
     Button temp1, temp2, temp3, temp4;
+    Wycieczka wycieczka;
+    ArrayList<Map<String, Object>> data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,10 @@ public class GeneralActivity extends Activity {
         setContentView(R.layout.activity_general);
         listView = (ListView) findViewById(R.id.listView1);
         ContentValues cv = new ContentValues();
-        dbHelper = new DBHelper(this);
+
+
+
+
         accessWebService();
 
 
@@ -88,7 +96,25 @@ public class GeneralActivity extends Activity {
                 startActivity(intent);
             }
         });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                    getToast(position);
+            }
+
+        });
+
     }
+    public  void getToast (int position ){
+       // test  = simpleAdapter.getItem(position).toString();
+
+
+
+
+
+//        Toast.makeText(this,test , Toast.LENGTH_LONG).show();
+    }
+
 
     // Async Task to access the web
     private class JsonReadTask extends AsyncTask<String, Void, String> {
@@ -143,43 +169,47 @@ public class GeneralActivity extends Activity {
 
     // build hash set for list view
     public void ListDrwaer() {
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-        Map<String, Object> m;
 
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
+
+
 
         try {
             JSONObject jsonResponse = new JSONObject(jsonResult);
             JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczki");
+            data = new ArrayList<Map<String, Object>>();
+            Map<String, Object> m;
+
+
+
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
                 Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
 
-               // String id = jsonChildNode.optString("id_wycieczki");
+                String id = jsonChildNode.optString("id_wycieczki");
                 String nazwa = jsonChildNode.optString("nazwa");
                 String dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
                 String cena  = jsonChildNode.optString("cena");
+                int id_w = Integer.parseInt(id);
+                double cena_w = Double.parseDouble(cena);
+
+
+                wycieczka = new Wycieczka(id_w,nazwa,cena_w,this);
+               // wycieczka.nowa_wyczieczka(,id_w,nazwa,cena_w,this);
+
 
                 m = new HashMap<String, Object>();
 
-               // m.put("id_w",id);
+
                 m.put ("nazwa",nazwa);
-                //m.put ("cena", cena);
+                m.put ("cena", cena);
+                m.put("id_w",id);
+
                 data.add(m);
 
-
-                String outPut = nazwa + " "+dlugosc_trasy + " " + cena;
-
-
-               // cv.put("nazwa", nazwa);
-                //cv.put("id_w", id);
-
-                //cv.put("cena",cena);
-                //cv.put("dlugosc_trasy",dlugosc_trasy);
-                //db.insert("wycieczki", null, cv);
             }
+
+
 
 
         } catch (JSONException e) {
@@ -187,21 +217,18 @@ public class GeneralActivity extends Activity {
                     Toast.LENGTH_SHORT).show();
         }
 
-        String[] from = {  "nazwa" };
-        int[] to = { R.id.tekst1};
+
         // массив ID View-компонентов, в которые будут вставлять данные
 
         // создаем адаптер
-        SimpleAdapter simpleAdapter = new SimpleAdapter(this, data, R.layout.item,
-                from, to);
-        listView.setAdapter(simpleAdapter);
+
+        if (wycieczka != null) {
+            listView.setAdapter(wycieczka.SimpleAdapter(data));
+        }
     }
 
-    private HashMap<String, String> createEmployee(String name, String number) {
-        HashMap<String, String> employeeNameNo = new HashMap<String, String>();
-        employeeNameNo.put(name, number);
-        return employeeNameNo;
-    }
+
+
 
 
     @Override
@@ -226,28 +253,5 @@ public class GeneralActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    class DBHelper extends SQLiteOpenHelper {
 
-        public DBHelper(Context context) {
-            // конструктор суперкласса
-            super(context, "myDB", null, 1);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            Log.d(LOG_TAG, "--- onCreate database ---");
-            // создаем таблицу с полями
-            db.execSQL("create table wycieczki ("
-                    + "id integer primary key autoincrement,"
-                    + "id_w integer,"
-                    + "nazwa text,"
-                    + "cena text,"
-                    +"dlugosc_trasy text" + ");");
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        }
-    }
 }

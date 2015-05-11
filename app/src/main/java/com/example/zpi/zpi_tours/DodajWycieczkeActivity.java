@@ -52,6 +52,7 @@ public class DodajWycieczkeActivity extends Activity {
 
     private String jsonResult = "";
     private String url = "http://zpitours.za.pl/insert-wycieczka.php";//10.0.2.2//192.168.0.11
+
     private String urlModeratorzy = "http://zpitours.za.pl/moderatorzy.php";//10.0.2.2//192.168.0.11
 
     @Override
@@ -78,7 +79,7 @@ public class DodajWycieczkeActivity extends Activity {
                     }
                 });
 
-        //zape³nienie Spinnera dla trudnoœci
+        //zapeï¿½nienie Spinnera dla trudnoï¿½ci
         ArrayAdapter<CharSequence> adapterTrudnosc = ArrayAdapter.createFromResource(this,
                 R.array.trudnosc_array, android.R.layout.simple_spinner_item);
         adapterTrudnosc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -97,7 +98,7 @@ public class DodajWycieczkeActivity extends Activity {
                 }
         );
 
-        //zape³nienie Spinnera dla moderatorów
+        //zapeï¿½nienie Spinnera dla moderatorï¿½w
         accessModeratorzy();
 
         spinnerModerator.setOnItemSelectedListener(
@@ -203,10 +204,10 @@ public class DodajWycieczkeActivity extends Activity {
                 String nazwa = textBoxNazwa.getText().toString()
                         + " do " + textBoxLokalizacja.getText().toString();
                 Toast.makeText(getApplicationContext(),
-                        "Wycieczka " + nazwa + " zosta³a pomyœlnie dodana.", Toast.LENGTH_LONG).show();
+                        "Wycieczka " + nazwa + " zostaï¿½a pomyï¿½lnie dodana.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getApplicationContext(),
-                        "Dodanie nie powiod³o siê.", Toast.LENGTH_LONG).show();
+                        "Dodanie nie powiodï¿½o siï¿½.", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error " + e.toString(),
