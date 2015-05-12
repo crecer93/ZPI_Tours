@@ -64,7 +64,7 @@
     <Button
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="Answer"
+        android:text="Register"
         android:layout_marginLeft="120dp"
         android:id="@+id/buttonAnswer"
         />
