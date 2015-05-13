@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,10 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -27,28 +24,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.database.sqlite.SQLiteOpenHelper;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.ArrayList;
 
 
 public class GeneralActivity extends Activity  {
 
     private String jsonResult;
-    private String url = "http://zpitours.za.pl/wycieczki.php";//192.168.0.11//10.0.2.2
+    private String url = "http://zpitours.za.pl/wycieczki-pelne.php";//192.168.0.11//10.0.2.2
     private ListView listView;
     final String LOG_TAG = "myLogs";
     Button temp1, temp2, temp3, temp4;
-    Wycieczka wycieczka;
     ArrayList<Map<String, Object>> data;
+    WycieczkiLista wycieczkiLista;
 
 
     @Override
@@ -57,9 +49,6 @@ public class GeneralActivity extends Activity  {
         setContentView(R.layout.activity_general);
         listView = (ListView) findViewById(R.id.listView1);
         ContentValues cv = new ContentValues();
-
-
-
 
         accessWebService();
 
@@ -157,7 +146,7 @@ public class GeneralActivity extends Activity  {
 
         @Override
         protected void onPostExecute(String result) {
-            ListDrwaer();
+            ListDrawer();
         }
     }// end async task
 
@@ -168,19 +157,11 @@ public class GeneralActivity extends Activity  {
     }
 
     // build hash set for list view
-    public void ListDrwaer() {
-
-
-
-
+    public void ListDrawer() {
         try {
             JSONObject jsonResponse = new JSONObject(jsonResult);
-            JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczki");
-            data = new ArrayList<Map<String, Object>>();
-            Map<String, Object> m;
-
-
-
+            JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczka");
+            wycieczkiLista = new WycieczkiLista(this);
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
                 Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
@@ -193,25 +174,10 @@ public class GeneralActivity extends Activity  {
                 int id_w = Integer.parseInt(id);
                 double cena_w = Double.parseDouble(cena);
 
+                Log.d(LOG_TAG, id+" "+nazwa+" "+cena);
 
-                wycieczka = new Wycieczka(id_w,nazwa,cena_w,this);
-               // wycieczka.nowa_wyczieczka(,id_w,nazwa,cena_w,this);
-
-
-                m = new HashMap<String, Object>();
-
-
-                m.put ("nazwa",nazwa);
-                m.put ("cena", cena);
-                m.put("id_w",id);
-
-                data.add(m);
-
+                wycieczkiLista.nowaWycieczka(i, id_w, nazwa, cena_w);
             }
-
-
-
-
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error" + e.toString(),
                     Toast.LENGTH_SHORT).show();
@@ -222,8 +188,8 @@ public class GeneralActivity extends Activity  {
 
         // создаем адаптер
 
-        if (wycieczka != null) {
-            listView.setAdapter(wycieczka.SimpleAdapter(data));
+        if (wycieczkiLista != null) {
+            listView.setAdapter(wycieczkiLista.simpleAdapter());
         }
     }
 

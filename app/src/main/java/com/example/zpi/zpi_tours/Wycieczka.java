@@ -15,34 +15,22 @@ public class Wycieczka {
     int id;
     String nazwa;
     double cena;
-    SimpleAdapter simpleAdapter ;
-    Context context;
-    ArrayList<Wycieczka> Wycieczki = new ArrayList<Wycieczka>();
 
-
-    public Wycieczka(int id, String nazwa, double cena,Context context) {
-
+    public Wycieczka(int id, String nazwa, double cena) {
         this.id = id;
         this.nazwa = nazwa;
         this.cena = cena;
-        this.context = context;
     }
 
-
-
-    public int getId(int position) {
+    public int getId() {
         return id;
     }
 
-    public void nowa_wyczieczka(int i,int id, String nazwa, double cena,Context context){
-       Wycieczki.add(i,new Wycieczka(id,nazwa,cena,context));
+    public String getNazwa() {
+        return nazwa;
     }
 
-    public ListAdapter SimpleAdapter ( ArrayList<Map<String, Object>> data){
-        String[] from = { "nazwa" ,"cena" };
-        int[] to = { R.id.tekst1, R.id.tekst2};
-
-        simpleAdapter = new SimpleAdapter(context, data, R.layout.item,from, to);
-        return simpleAdapter;
+    public double getCena() {
+        return cena;
     }
 }

@@ -1,7 +1,7 @@
 <?php
 include('baza-danych.php');
 
-$sql = "SELECT email, haslo FROM Uzytkownicy"; 
+$sql = "SELECT email, haslo FROM uzytkownicy"; 
 $result = mysql_query($sql);
 $json = array();
  
