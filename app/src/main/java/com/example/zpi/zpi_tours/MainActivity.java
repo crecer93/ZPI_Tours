@@ -65,9 +65,8 @@ public class MainActivity extends Activity {
                         accessWebService();
                     }
                 });
-        //TODO: Find out why button to new activity doesn't work!
+        
         buttonAnswer.setOnClickListener(new View.OnClickListener(){
-            @Override
             public void onClick(View view){
                 Intent i = new Intent(getApplicationContext(), RejestracjaUzytkownikaActivity.class);
                 startActivity(i);
