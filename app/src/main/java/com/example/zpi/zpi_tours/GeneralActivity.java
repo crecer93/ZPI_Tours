@@ -44,11 +44,19 @@ public class GeneralActivity extends Activity  {
 
     private String jsonResult;
     private String url = "http://zpitours.za.pl/wycieczki.php";//192.168.0.11//10.0.2.2
-    private ListView listView;
+    public ListView listView;
     final String LOG_TAG = "myLogs";
     Button temp1, temp2, temp3, temp4;
-    Wycieczka wycieczka;
+    Wycieczka wycieczka_adapter = new Wycieczka();
+    Wycieczka wycieczka ;
     ArrayList<Map<String, Object>> data;
+    int id_w;
+    double cena_w;
+    String nazwa;
+    ArrayList<Wycieczka> Wycieczki =  new ArrayList<Wycieczka>(7);
+
+    JSONArray jsonMainNode ;
+
 
 
     @Override
@@ -56,13 +64,8 @@ public class GeneralActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general);
         listView = (ListView) findViewById(R.id.listView1);
-        ContentValues cv = new ContentValues();
-
-
-
 
         accessWebService();
-
 
         temp1 = (Button)findViewById(R.id.temp1);
         temp1.setOnClickListener(new View.OnClickListener() {
@@ -106,13 +109,12 @@ public class GeneralActivity extends Activity  {
 
     }
     public  void getToast (int position ){
-       // test  = simpleAdapter.getItem(position).toString();
 
+         //int id = wycieczka.getId(position);
+         //String test =""+id;
+         //Toast.makeText(this,test , Toast.LENGTH_LONG).show();
+        list();
 
-
-
-
-//        Toast.makeText(this,test , Toast.LENGTH_LONG).show();
     }
 
 
@@ -170,60 +172,57 @@ public class GeneralActivity extends Activity  {
     // build hash set for list view
     public void ListDrwaer() {
 
-
-
-
         try {
             JSONObject jsonResponse = new JSONObject(jsonResult);
-            JSONArray jsonMainNode = jsonResponse.optJSONArray("wycieczki");
+            jsonMainNode = jsonResponse.optJSONArray("wycieczki");
             data = new ArrayList<Map<String, Object>>();
             Map<String, Object> m;
-
-
 
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
                 Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+               jsonMainNode = jsonResponse.optJSONArray("wycieczki");
+
 
                 String id = jsonChildNode.optString("id_wycieczki");
-                String nazwa = jsonChildNode.optString("nazwa");
+                nazwa = jsonChildNode.optString("nazwa");
                 String dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
                 String cena  = jsonChildNode.optString("cena");
-                int id_w = Integer.parseInt(id);
-                double cena_w = Double.parseDouble(cena);
 
-
-                wycieczka = new Wycieczka(id_w,nazwa,cena_w,this);
-               // wycieczka.nowa_wyczieczka(,id_w,nazwa,cena_w,this);
-
+                id_w = Integer.parseInt(id);
+                cena_w = Double.parseDouble(cena);
 
                 m = new HashMap<String, Object>();
-
-
                 m.put ("nazwa",nazwa);
                 m.put ("cena", cena);
                 m.put("id_w",id);
 
                 data.add(m);
+                wycieczka_adapter = new Wycieczka(id_w,nazwa,cena_w,this);
+                //System.out.println("Test"+i);
+
+                 dodajWy(i,id_w,nazwa,cena_w);
 
             }
-
-
-
-
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error" + e.toString(),
                     Toast.LENGTH_SHORT).show();
         }
+            listView.setAdapter(wycieczka_adapter.SimpleAdapter(data));
 
+    }
 
-        // массив ID View-компонентов, в которые будут вставлять данные
+    public void dodajWy(int k ,int id_w,String nazwa,double cena_w ){
 
-        // создаем адаптер
+           //wycieczka = new Wycieczka();
+           //wycieczka.nowa_wyczieczka(k,new Wycieczka(id_w,nazwa,cena_w,this));
+            Wycieczki.add( k,new Wycieczka(id_w,nazwa,cena_w,this));
 
-        if (wycieczka != null) {
-            listView.setAdapter(wycieczka.SimpleAdapter(data));
+    }
+    public void list(){
+        for (int k = 0 ; k< Wycieczki.size(); k++ ) {
+            System.out.println(Wycieczki.get(k).nazwa);
         }
     }
 

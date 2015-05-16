@@ -17,7 +17,7 @@ public class Wycieczka {
     double cena;
     SimpleAdapter simpleAdapter ;
     Context context;
-    ArrayList<Wycieczka> Wycieczki = new ArrayList<Wycieczka>();
+
 
 
     public Wycieczka(int id, String nazwa, double cena,Context context) {
@@ -26,16 +26,32 @@ public class Wycieczka {
         this.nazwa = nazwa;
         this.cena = cena;
         this.context = context;
+
+    }
+    public Wycieczka (){
+
     }
 
 
 
-    public int getId(int position) {
-        return id;
+   /* public int getId(int position) {
+       int id =  Wycieczki.get(position).id;
+        return id ;
     }
+    public void list (){
+        for (int k = 0 ; k< Wycieczki.size(); k++ ) {
+            System.out.println(Wycieczki.get(k).nazwa);
+        }
+    }*/
+    public void setSizeArray(){
+        //Wycieczki =
+    }
+    public void nowa_wyczieczka(int i,Wycieczka wycieczka)
+    {
 
-    public void nowa_wyczieczka(int i,int id, String nazwa, double cena,Context context){
-       Wycieczki.add(i,new Wycieczka(id,nazwa,cena,context));
+
+
+
     }
 
     public ListAdapter SimpleAdapter ( ArrayList<Map<String, Object>> data){
