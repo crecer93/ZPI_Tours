@@ -1,0 +1,230 @@
+package com.example.zpi.zpi_tours;
+
+import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+public class WycieczkaActivity extends Activity {
+
+    private String jsonResult;
+    private String url = "http://zpitours.za.pl/wycieczka-moderator-uczestnicy.php";
+    JSONArray jsonMainNode;
+    final String LOG_TAG = "myLogs";
+
+    String id_wycieczki;
+    TextView nazwa_w;
+    TextView opis_w;
+    TextView dlugosc_w;
+    TextView poziom_w;
+    TextView lokalizacja_w;
+    TextView data_po;
+    TextView data_ko;
+    TextView cena_w;
+    TextView email_m;
+    TextView ilosc_m;
+
+
+
+
+
+
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        id_wycieczki = getIntent().getStringExtra("id_wycieczki");
+
+        Toast.makeText(getApplicationContext(),
+               id_wycieczki, Toast.LENGTH_LONG).show();
+
+        if(id_wycieczki == null) {
+            Toast.makeText(getApplicationContext(),
+                    "Wywołano tę aktywność bez podania klucza wycieczki w intencji.", Toast.LENGTH_LONG).show();
+        } else {
+            setContentView(R.layout.activity_wycieczka);
+            nazwa_w = (TextView)findViewById(R.id.nazwa_w);
+            opis_w = (TextView)findViewById(R.id.opis_w);
+            dlugosc_w = (TextView)findViewById(R.id.dlugosc_w);
+            poziom_w = (TextView)findViewById(R.id.poziom_w);
+            lokalizacja_w = (TextView)findViewById(R.id.lokalizacja_w);
+            data_po = (TextView)findViewById(R.id.data_po);
+            data_ko = (TextView)findViewById(R.id.data_ko);
+            cena_w = (TextView)findViewById(R.id.cena_w);
+            email_m = (TextView)findViewById(R.id.email_m);
+            ilosc_m = (TextView)findViewById(R.id.ilosc_m);
+
+            accessWebService();
+        }
+    }
+
+    private class JsonReadTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(params[0]);
+            try {
+                if(params[0].equals(url)) {
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                    nameValuePairs.add(new BasicNameValuePair("id_wycieczka",id_wycieczki));
+                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                }
+                HttpResponse response = httpclient.execute(httppost);
+                jsonResult = inputStreamToString(
+                        response.getEntity().getContent()).toString();
+                Log.v("Ping", "jsonResult" + jsonResult);
+            }
+           /* try {
+                HttpResponse response = httpclient.execute(httppost);
+                jsonResult = inputStreamToString(
+                        response.getEntity().getContent()).toString();
+            }*/
+
+            catch (ClientProtocolException e) {
+                Log.v("Ping","ClientProtocolExecption");
+                e.printStackTrace();
+            } catch (IOException e) {
+                Log.v("Ping","IOException");
+                e.printStackTrace();
+            } catch (Exception e) {
+                Log.v("Ping","Other exception");
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        private StringBuilder inputStreamToString(InputStream is) {
+            String rLine = "";
+            StringBuilder answer = new StringBuilder();
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+            try {
+                while ((rLine = rd.readLine()) != null) {
+                    answer.append(rLine);
+                }
+            }
+
+            catch (IOException e) {
+                // e.printStackTrace();
+                Toast.makeText(getApplicationContext(),
+                        "Error..." + e.toString(), Toast.LENGTH_LONG).show();
+            }
+            return answer;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            ListDrwaer();
+        }
+    }// end async task
+
+    public void accessWebService() {
+        JsonReadTask task = new JsonReadTask();
+        // passes values for the urls string array
+        task.execute(new String[] { url });
+    }
+
+    // pobieramy JSON i parsujemy dorzucamy do list adapter
+    public void ListDrwaer() {
+        String nazwa;
+        String opis;
+        String dlugosc_trasy;
+        String cena_wy;
+        String poziom;
+        String lokalizacja;
+        String data_po_w;
+        String data_ko_w;
+        String ilosc_mie;
+        String email_m;
+        String email_u;
+        String miasto_u;
+
+
+        try {
+            JSONObject jsonResponse = new JSONObject(jsonResult);
+            jsonMainNode = jsonResponse.optJSONArray("wycieczka");
+
+            for (int i = 0; i < jsonMainNode.length(); i++) {
+
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                jsonMainNode = jsonResponse.optJSONArray("wycieczka");
+
+                nazwa = jsonChildNode.optString("nazwa");
+                opis = jsonChildNode.optString("opis");
+                dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
+                poziom = jsonChildNode.optString("poziom_trudnosci");
+                lokalizacja = jsonChildNode.optString("lokalizacja");
+                data_po_w = jsonChildNode.optString("data_poczatku");
+                data_ko_w = jsonChildNode.optString("data_konca");
+                cena_wy  = jsonChildNode.optString("cena");
+                ilosc_mie = jsonChildNode.optString("liczba_miejsc");
+
+                nazwa_w.setText(nazwa);
+                opis_w.setText(opis);
+                dlugosc_w.setText(dlugosc_trasy);
+                poziom_w.setText(poziom);
+                lokalizacja_w.setText(lokalizacja);
+                data_po.setText(data_po_w);
+                data_ko.setText(data_ko_w);
+                cena_w.setText(cena_wy);
+                ilosc_m.setText(ilosc_mie);
+
+            }
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), "Error" + e.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_wycieczka, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}

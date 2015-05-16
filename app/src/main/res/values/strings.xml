@@ -21,4 +21,7 @@
     <string name="title_activity_aktualizuj_uzytkownika">Dane osobowe</string>
     <string name="title_activity_rejestracja_uzytkownika">Rejestracja</string>
     <string name="title_activity_dodaj_wycieczke">DodajWycieczkeActivity</string>
+    <string name="title_activity_wycieczka">WycieczkaActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>

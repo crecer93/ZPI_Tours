@@ -71,6 +71,10 @@
             android:name=".DodajWycieczkeActivity"
             android:label="@string/title_activity_dodaj_wycieczke" >
         </activity>
+        <activity
+            android:name=".WycieczkaActivity"
+            android:label="@string/title_activity_wycieczka" >
+        </activity>
     </application>
 
 </manifest>

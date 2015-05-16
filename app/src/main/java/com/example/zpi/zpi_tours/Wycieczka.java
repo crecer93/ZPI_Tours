@@ -31,29 +31,6 @@ public class Wycieczka {
     public Wycieczka (){
 
     }
-
-
-
-   /* public int getId(int position) {
-       int id =  Wycieczki.get(position).id;
-        return id ;
-    }
-    public void list (){
-        for (int k = 0 ; k< Wycieczki.size(); k++ ) {
-            System.out.println(Wycieczki.get(k).nazwa);
-        }
-    }*/
-    public void setSizeArray(){
-        //Wycieczki =
-    }
-    public void nowa_wyczieczka(int i,Wycieczka wycieczka)
-    {
-
-
-
-
-    }
-
     public ListAdapter SimpleAdapter ( ArrayList<Map<String, Object>> data){
         String[] from = { "nazwa" ,"cena" };
         int[] to = { R.id.tekst1, R.id.tekst2};

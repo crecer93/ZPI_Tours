@@ -48,14 +48,12 @@ public class GeneralActivity extends Activity  {
     final String LOG_TAG = "myLogs";
     Button temp1, temp2, temp3, temp4;
     Wycieczka wycieczka_adapter = new Wycieczka();
-    Wycieczka wycieczka ;
     ArrayList<Map<String, Object>> data;
     int id_w;
     double cena_w;
     String nazwa;
     ArrayList<Wycieczka> Wycieczki =  new ArrayList<Wycieczka>(7);
-
-    JSONArray jsonMainNode ;
+    JSONArray jsonMainNode;
 
 
 
@@ -102,19 +100,21 @@ public class GeneralActivity extends Activity  {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                    getToast(position);
+
+                setID(position);
             }
 
         });
 
     }
-    public  void getToast (int position ){
+    public  void setID (int position ){
+        int id_wycieczki = Wycieczki.get(position).id ;
+        String id_w = Integer.toString(id_wycieczki);
+        Context context =getApplicationContext();
+        Intent intent = new Intent(context, WycieczkaActivity.class );
+        intent.putExtra("id_wycieczki",id_w);
 
-         //int id = wycieczka.getId(position);
-         //String test =""+id;
-         //Toast.makeText(this,test , Toast.LENGTH_LONG).show();
-        list();
-
+        startActivity(intent);
     }
 
 
@@ -169,7 +169,7 @@ public class GeneralActivity extends Activity  {
         task.execute(new String[] { url });
     }
 
-    // build hash set for list view
+    // pobieramy JSON i parsujemy dorzucamy do list adapter
     public void ListDrwaer() {
 
         try {
@@ -200,7 +200,6 @@ public class GeneralActivity extends Activity  {
 
                 data.add(m);
                 wycieczka_adapter = new Wycieczka(id_w,nazwa,cena_w,this);
-                //System.out.println("Test"+i);
 
                  dodajWy(i,id_w,nazwa,cena_w);
 
@@ -212,23 +211,16 @@ public class GeneralActivity extends Activity  {
             listView.setAdapter(wycieczka_adapter.SimpleAdapter(data));
 
     }
-
+    //dodawanie wycieczki do Array
     public void dodajWy(int k ,int id_w,String nazwa,double cena_w ){
-
-           //wycieczka = new Wycieczka();
-           //wycieczka.nowa_wyczieczka(k,new Wycieczka(id_w,nazwa,cena_w,this));
             Wycieczki.add( k,new Wycieczka(id_w,nazwa,cena_w,this));
-
     }
+    //testowa metoda do listadapter
     public void list(){
         for (int k = 0 ; k< Wycieczki.size(); k++ ) {
             System.out.println(Wycieczki.get(k).nazwa);
         }
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
