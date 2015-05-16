@@ -65,6 +65,13 @@ public class MainActivity extends Activity {
                         accessWebService();
                     }
                 });
+        
+        buttonAnswer.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                Intent i = new Intent(getApplicationContext(), RejestracjaUzytkownikaActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     private class JsonReadTask extends AsyncTask<String, Void, String> {
