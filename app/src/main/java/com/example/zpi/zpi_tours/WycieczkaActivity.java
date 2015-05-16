@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,9 @@ public class WycieczkaActivity extends Activity {
     private String url = "http://zpitours.za.pl/wycieczka-moderator-uczestnicy.php";
     JSONArray jsonMainNode;
     final String LOG_TAG = "myLogs";
+    ArrayList<Map<String, Object>> data;
+    public ListView listUczestnicy;
+    SimpleAdapter simpleAdapter ;
 
     String id_wycieczki;
     TextView nazwa_w;
@@ -47,7 +52,7 @@ public class WycieczkaActivity extends Activity {
     TextView data_po;
     TextView data_ko;
     TextView cena_w;
-    TextView email_m;
+    TextView email_mod;
     TextView ilosc_m;
 
 
@@ -62,8 +67,7 @@ public class WycieczkaActivity extends Activity {
         super.onCreate(savedInstanceState);
         id_wycieczki = getIntent().getStringExtra("id_wycieczki");
 
-        Toast.makeText(getApplicationContext(),
-               id_wycieczki, Toast.LENGTH_LONG).show();
+
 
         if(id_wycieczki == null) {
             Toast.makeText(getApplicationContext(),
@@ -78,8 +82,9 @@ public class WycieczkaActivity extends Activity {
             data_po = (TextView)findViewById(R.id.data_po);
             data_ko = (TextView)findViewById(R.id.data_ko);
             cena_w = (TextView)findViewById(R.id.cena_w);
-            email_m = (TextView)findViewById(R.id.email_m);
+            email_mod = (TextView)findViewById(R.id.email_m);
             ilosc_m = (TextView)findViewById(R.id.ilosc_m);
+            listUczestnicy = (ListView)findViewById(R.id.listUczestnicy);
 
             accessWebService();
         }
@@ -93,7 +98,7 @@ public class WycieczkaActivity extends Activity {
             try {
                 if(params[0].equals(url)) {
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                    nameValuePairs.add(new BasicNameValuePair("id_wycieczka",id_wycieczki));
+                    nameValuePairs.add(new BasicNameValuePair("id_wycieczki",id_wycieczki));
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 }
                 HttpResponse response = httpclient.execute(httppost);
@@ -141,7 +146,9 @@ public class WycieczkaActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            ListDrwaer();
+            WycieczkaSeter();
+            ModeratorSeter();
+            ListUczestnicy();
         }
     }// end async task
 
@@ -152,7 +159,7 @@ public class WycieczkaActivity extends Activity {
     }
 
     // pobieramy JSON i parsujemy dorzucamy do list adapter
-    public void ListDrwaer() {
+    public void WycieczkaSeter() {
         String nazwa;
         String opis;
         String dlugosc_trasy;
@@ -162,9 +169,6 @@ public class WycieczkaActivity extends Activity {
         String data_po_w;
         String data_ko_w;
         String ilosc_mie;
-        String email_m;
-        String email_u;
-        String miasto_u;
 
 
         try {
@@ -204,6 +208,81 @@ public class WycieczkaActivity extends Activity {
 
 
     }
+
+    public void ModeratorSeter() {
+
+        String email_m;
+        try {
+            JSONObject jsonResponse = new JSONObject(jsonResult);
+            jsonMainNode = jsonResponse.optJSONArray("moderator");
+
+            for (int i = 0; i < jsonMainNode.length(); i++) {
+
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                jsonMainNode = jsonResponse.optJSONArray("moderator");
+
+               email_m = jsonChildNode.optString("email");
+               email_mod.setText(email_m);
+            }
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), "Error" + e.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    public void ListUczestnicy() {
+        String email_u;
+        String miasto_u;
+
+        try {
+            JSONObject jsonResponse = new JSONObject(jsonResult);
+            jsonMainNode = jsonResponse.optJSONArray("uczestnicy");
+            data = new ArrayList<Map<String, Object>>();
+            Map<String, Object> m;
+
+
+            for (int i = 0; i < jsonMainNode.length(); i++) {
+                Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
+                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
+                jsonMainNode = jsonResponse.optJSONArray("uczestnicy");
+
+
+
+                email_u =  jsonChildNode.optString("email");
+                miasto_u=  jsonChildNode.optString("nazwa_miasta");
+
+
+
+
+                m = new HashMap<String, Object>();
+                m.put ("email",email_u);
+                m.put ("miasto", miasto_u);
+
+                Toast.makeText(getApplicationContext(),
+                        email_u+" "+miasto_u, Toast.LENGTH_LONG).show();
+
+
+                data.add(m);
+
+
+
+
+            }
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), "Error" + e.toString(),
+                    Toast.LENGTH_SHORT).show();
+        }
+        String[] from = { "email" ,"miasto" };
+        int[] to = { R.id.tekst1, R.id.tekst2};
+
+        simpleAdapter = new SimpleAdapter(this, data, R.layout.item,from, to);
+        listUczestnicy.setAdapter(simpleAdapter);
+
+    }
+
+
 
 
     @Override
