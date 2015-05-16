@@ -75,6 +75,10 @@
             android:name=".WycieczkaActivity"
             android:label="@string/title_activity_wycieczka" >
         </activity>
+        <activity
+            android:name=".ListaUczestnikow"
+            android:label="@string/title_activity_lista_uczestnikow" >
+        </activity>
     </application>
 
 </manifest>

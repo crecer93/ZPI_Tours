@@ -1,21 +1,25 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:orientation="vertical"
-    android:weightSum="1">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+android:paddingRight="@dimen/activity_horizontal_margin"
+android:paddingTop="@dimen/activity_vertical_margin"
+android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
+android:orientation="vertical"
+android:weightSum="1">
 
-    <LinearLayout
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:padding="10dp"
-    android:layout_marginTop="150dp"    >
+    android:layout_marginTop="151dp"
+    android:id="@+id/linearLayout"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentLeft="true">
     <TextView
         android:layout_width="59dp"
         android:layout_height="wrap_content"
         android:text="Login"
+        android:textSize="20dp"
         android:id="@+id/lableLogin" />
 
     <EditText
@@ -23,51 +27,67 @@
         android:layout_height="wrap_content"
         android:text="jan@gmail.com"
         android:ems="10"
-        android:id="@+id/textBoxLogin"
-        android:layout_gravity="center_horizontal" />
+        android:id="@+id/textBoxLogin" />
 
 
 
 
 </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:padding="10dp">
-        <TextView
-            android:layout_width="59dp"
-            android:layout_height="wrap_content"
-            android:text="Hasło"
-            android:id="@+id/lablePass" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:padding="10dp"
+    android:id="@+id/linearLayout1"
+    android:layout_below="@+id/linearLayout"
+    android:layout_alignParentLeft="true">
 
-
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:text="poop"
-            android:id="@+id/textBoxPass"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <Button
-        android:layout_width="100dp"
+    <TextView
+        android:layout_width="59dp"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:layout_marginLeft="120dp"
-        android:id="@+id/buttonLogin"
-       />
+        android:text="Hasło"
+        android:textSize="20dp"
+        android:id="@+id/lablePass"
+        android:layout_alignTop="@+id/textBoxPass"
+        android:layout_toLeftOf="@+id/textBoxPass" />
 
-    <Button
-        android:layout_width="100dp"
+    <EditText
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
-        android:layout_marginLeft="120dp"
-        android:id="@+id/buttonAnswer"
-        />
-
+        android:inputType="textPassword"
+        android:ems="10"
+        android:text="poop"
+        android:id="@+id/textBoxPass"
+        android:layout_weight="1"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentRight="true" />
 
 </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:id="@+id/buttonLogin"
+            android:layout_marginLeft="44dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:id="@+id/buttonAnswer"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/buttonLogin" />
+        </RelativeLayout>
+
+
+</RelativeLayout>
+

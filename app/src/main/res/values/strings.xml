@@ -24,4 +24,5 @@
     <string name="title_activity_wycieczka">WycieczkaActivity</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_lista_uczestnikow">ListaUczestnikow</string>
 </resources>

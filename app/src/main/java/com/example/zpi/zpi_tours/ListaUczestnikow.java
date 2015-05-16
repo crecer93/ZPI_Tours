@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class WycieczkaActivity extends Activity {
+public class ListaUczestnikow extends Activity {
 
     private String jsonResult;
     private String url = "http://zpitours.za.pl/wycieczka-moderator-uczestnicy.php";
@@ -47,66 +46,24 @@ public class WycieczkaActivity extends Activity {
     public ListView listUczestnicy;
     SimpleAdapter simpleAdapter ;
 
+
     String id_wycieczki;
-    TextView nazwa_w;
-    TextView opis_w;
-    TextView dlugosc_w;
-    TextView poziom_w;
-    TextView lokalizacja_w;
-    TextView data_po;
-    TextView data_ko;
-    TextView cena_w;
-    TextView email_mod;
-    TextView ilosc_m;
-    Button lista;
-
-
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         id_wycieczki = getIntent().getStringExtra("id_wycieczki");
-
-
-
         if(id_wycieczki == null) {
             Toast.makeText(getApplicationContext(),
                     "Wywołano tę aktywność bez podania klucza wycieczki w intencji.", Toast.LENGTH_LONG).show();
         } else {
-            setContentView(R.layout.activity_wycieczka);
-            nazwa_w = (TextView)findViewById(R.id.nazwa_w);
-            opis_w = (TextView)findViewById(R.id.opis_w);
-            dlugosc_w = (TextView)findViewById(R.id.dlugosc_w);
-            poziom_w = (TextView)findViewById(R.id.poziom_w);
-            lokalizacja_w = (TextView)findViewById(R.id.lokalizacja_w);
-            data_po = (TextView)findViewById(R.id.data_po);
-            data_ko = (TextView)findViewById(R.id.data_ko);
-            cena_w = (TextView)findViewById(R.id.cena_w);
-            email_mod = (TextView)findViewById(R.id.email_m);
-            ilosc_m = (TextView)findViewById(R.id.ilosc_m);
-            lista  = (Button)findViewById(R.id.buttonLista);
-
+            setContentView(R.layout.activity_lista_uczestnikow);
+            listUczestnicy = (ListView)findViewById(R.id.listUczestnicy);
             accessWebService();
         }
 
-
-
-        lista.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Context context =getApplicationContext();
-                Intent intent = new Intent(context,ListaUczestnikow.class  );
-                intent.putExtra("id_wycieczki",id_wycieczki);
-                startActivity(intent);
-            }
-        });
     }
-
-
 
     private class JsonReadTask extends AsyncTask<String, Void, String> {
         @Override
@@ -164,9 +121,7 @@ public class WycieczkaActivity extends Activity {
 
         @Override
         protected void onPostExecute(String result) {
-            WycieczkaSeter();
-            ModeratorSeter();
-
+            ListUczestnicy();
         }
     }// end async task
 
@@ -176,89 +131,51 @@ public class WycieczkaActivity extends Activity {
         task.execute(new String[] { url });
     }
 
-    // pobieramy JSON i parsujemy dorzucamy do list adapter
-    public void WycieczkaSeter() {
-        String nazwa;
-        String opis;
-        String dlugosc_trasy;
-        String cena_wy;
-        String poziom;
-        String lokalizacja;
-        String data_po_w;
-        String data_ko_w;
-        String ilosc_mie;
-
+    public void ListUczestnicy() {
+        String email_u;
+        String miasto_u;
 
         try {
             JSONObject jsonResponse = new JSONObject(jsonResult);
-            jsonMainNode = jsonResponse.optJSONArray("wycieczka");
+            jsonMainNode = jsonResponse.optJSONArray("uczestnicy");
+            data = new ArrayList<Map<String, Object>>();
+            Map<String, Object> m;
+
 
             for (int i = 0; i < jsonMainNode.length(); i++) {
-
+                Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                jsonMainNode = jsonResponse.optJSONArray("wycieczka");
 
-                nazwa = jsonChildNode.optString("nazwa");
-                opis = jsonChildNode.optString("opis");
-                dlugosc_trasy = jsonChildNode.optString("dlugosc_trasy");
-                poziom = jsonChildNode.optString("poziom_trudnosci");
-                lokalizacja = jsonChildNode.optString("lokalizacja");
-                data_po_w = jsonChildNode.optString("data_poczatku");
-                data_ko_w = jsonChildNode.optString("data_konca");
-                cena_wy  = jsonChildNode.optString("cena");
-                ilosc_mie = jsonChildNode.optString("liczba_miejsc");
+                email_u =  jsonChildNode.optString("email");
+                miasto_u=  jsonChildNode.optString("nazwa_miasta");
 
-                nazwa_w.setText(nazwa);
-                opis_w.setText(opis);
-                dlugosc_w.setText(dlugosc_trasy);
-                poziom_w.setText(poziom);
-                lokalizacja_w.setText(lokalizacja);
-                data_po.setText(data_po_w);
-                data_ko.setText(data_ko_w);
-                cena_w.setText(cena_wy);
-                ilosc_m.setText(ilosc_mie);
+
+
+
+                m = new HashMap<String, Object>();
+                m.put ("email",email_u);
+                m.put ("miasto", miasto_u);
+
+                data.add(m);
 
             }
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Error" + e.toString(),
                     Toast.LENGTH_SHORT).show();
         }
+        String[] from = { "email" ,"miasto" };
+        int[] to = { R.id.tekst1, R.id.tekst2};
 
-
-    }
-
-    public void ModeratorSeter() {
-
-        String email_m;
-        try {
-            JSONObject jsonResponse = new JSONObject(jsonResult);
-            jsonMainNode = jsonResponse.optJSONArray("moderator");
-
-            for (int i = 0; i < jsonMainNode.length(); i++) {
-
-                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                jsonMainNode = jsonResponse.optJSONArray("moderator");
-
-               email_m = jsonChildNode.optString("email");
-               email_mod.setText(email_m);
-            }
-        } catch (JSONException e) {
-            Toast.makeText(getApplicationContext(), "Error" + e.toString(),
-                    Toast.LENGTH_SHORT).show();
-        }
-
+        simpleAdapter = new SimpleAdapter(this, data, R.layout.item_uczestnik,from, to);
+        listUczestnicy.setAdapter(simpleAdapter);
 
     }
-
-
-
-
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_wycieczka, menu);
+        getMenuInflater().inflate(R.menu.menu_lista_uczestnikow, menu);
         return true;
     }
 
