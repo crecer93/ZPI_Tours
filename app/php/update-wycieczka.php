@@ -27,7 +27,7 @@ mysql_query("SET character_set_connection = 'utf8'");
 
 $pierwsze = TRUE;
 
-$sql = "UPDATE Wycieczki SET ";
+$sql = "UPDATE wycieczki SET ";
 if($liczba_miejsc != "") {
 	if(!$pierwsze)
 		$sql .=", ";
