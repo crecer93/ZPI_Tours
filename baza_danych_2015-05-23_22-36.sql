@@ -1107,7 +1107,7 @@ INSERT INTO `wycieczki` (`id_wycieczki`, `liczba_miejsc`, `nazwa`, `opis`, `dlug
 CREATE TABLE IF NOT EXISTS `super_admin` (
   `super_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `super_email` varchar(50) NOT NULL,
-  `super_haslo` varchar(32) NOT NULL,
+  `super_haslo` char(32) NOT NULL,
   PRIMARY KEY (`super_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1;
 
