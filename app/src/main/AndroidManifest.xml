@@ -79,6 +79,18 @@
             android:name=".ListaUczestnikow"
             android:label="@string/title_activity_lista_uczestnikow" >
         </activity>
+        <activity
+            android:name=".SuperUzytkownicyActivity"
+            android:label="@string/title_activity_super_uzytkownicy" >
+        </activity>
+        <activity
+            android:name=".SuperPromocjaActivity"
+            android:label="@string/title_activity_super_promocja"
+            android:parentActivityName=".SuperUzytkownicyActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SuperUzytkownicyActivity" />
+        </activity>
     </application>
 
 </manifest>

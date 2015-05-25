@@ -1,7 +1,7 @@
 <?php
 include('baza-danych.php');
 
-$sql = "SELECT  nazwa, dlugosc_trasy, cena FROM wycieczki"; 
+$sql = "SELECT id_wycieczki, nazwa, dlugosc_trasy, cena FROM wycieczki"; 
 $result = mysql_query($sql);
 $json = array();
  

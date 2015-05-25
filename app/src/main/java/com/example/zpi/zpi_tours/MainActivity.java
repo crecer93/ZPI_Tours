@@ -14,10 +14,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +29,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +48,9 @@ public class MainActivity extends Activity {
 
 
     private String jsonResult = "";
-    private String url = "http://zpitours.za.pl/login.php";//10.0.2.2//192.168.0.11
-   // private String url = "http://10.0.2.2/SerwerXampp//ZPI_Tours/login.php";//10.0.2.2//192.168.0.11
+    private String url = "http://zpitours.za.pl/login-improved.php";
+    //"http://10.0.2.2/login.php";//10.0.2.2//192.168.0.11
+   // private String url = "http://zpitours.za.pl/login.php";//10.0.2.2//192.168.0.11
 
 
     @Override
@@ -80,6 +86,33 @@ public class MainActivity extends Activity {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httppost = new HttpPost(params[0]);
             try {
+                if(params[0].equals(url)) {
+                    byte[] hash;
+
+                    try {
+                        hash = MessageDigest.getInstance("MD5").digest(password.getText().toString().getBytes("UTF-8"));
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException("Huh, MD5 should be supported?", e);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException("Huh, UTF-8 should be supported?", e);
+                    }
+
+                    StringBuilder hex = new StringBuilder(hash.length * 2);
+
+                    for (byte b : hash) {
+                        int i = (b & 0xFF);
+                        if (i < 0x10) hex.append('0');
+                        hex.append(Integer.toHexString(i));
+                    }
+
+                    String haslo = hex.toString();
+                    Log.v("Użytkownik","hash to " + haslo + " ");
+
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                    nameValuePairs.add(new BasicNameValuePair("email",loginBox.getText().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("hash",haslo));
+                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                }
                 HttpResponse response = httpclient.execute(httppost);
                 jsonResult = inputStreamToString(
                         response.getEntity().getContent()).toString();
@@ -131,23 +164,29 @@ public class MainActivity extends Activity {
         try {
             JSONObject jsonResponse = new JSONObject(jsonResult);
             JSONArray jsonMainNode = jsonResponse.optJSONArray("klient");
+            Log.v("Użytkownik", "jsonMainNode: " + jsonMainNode);
 
-            for (int i = 0; i < jsonMainNode.length(); i++) {
-                JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-                String login = jsonChildNode.optString("email");
-                String haslo = jsonChildNode.optString("haslo");
+            if (jsonMainNode != null) {
+                String stan = jsonResponse.optString("stan");
+                Log.v("Użytkownik", "Odebrany stan to: "+ stan);
 
-                if (loginBox.getText().toString().equals(login)& password.getText().toString().equals(haslo)){
+                if (stan.equals("user")){
                     Log.v("Użytkownik", loginBox.getText().toString()+" jest zalogowany");
                     context =getApplicationContext();
                     intent = new Intent(context, GeneralActivity.class );
                     startActivity(intent);
-                    isAccept = true ;
+                    isAccept = true;
+                } else if(stan.equals("admin")) {
+                    Log.v("Użytkownik", loginBox.getText().toString()+" (super-admin) jest zalogowany");
+                    context =getApplicationContext();
+                    intent = new Intent(context, SuperUzytkownicyActivity.class );
+                    startActivity(intent);
+                    isAccept = true;
                 }
             }
             if(isAccept==false) {
                 Toast toast = Toast.makeText(getApplicationContext(),
-                        "Hasło lub login jest nie poprawne!", Toast.LENGTH_SHORT);
+                        "Hasło lub login jest niepoprawne!", Toast.LENGTH_SHORT);
                 toast.show();
                 Log.v("Użytkownik", loginBox.getText().toString()+" nie jest zalogowany");
             }
