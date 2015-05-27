@@ -36,8 +36,6 @@
         android:layout_height="40dp"
         android:id="@+id/imageButton"
         android:src="@mipmap/remove" />
-
-
-
     </LinearLayout>
+
 </LinearLayout>
