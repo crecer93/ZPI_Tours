@@ -31,6 +31,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,10 +162,33 @@ public class AktualizujUzytkownikaActivity extends Activity {
             HttpPost httppost = new HttpPost(params[0]);
             try {
                 if(params[0].equals(url)) {
+                    String haslo = "";
+
+                    if(textBoxHaslo.getText().toString().length() != 0) {
+                        byte[] hash;
+
+                        try {
+                            hash = MessageDigest.getInstance("MD5").digest(textBoxHaslo.getText().toString().getBytes("UTF-8"));
+                        } catch (NoSuchAlgorithmException e) {
+                            throw new RuntimeException("Huh, MD5 should be supported?", e);
+                        } catch (UnsupportedEncodingException e) {
+                            throw new RuntimeException("Huh, UTF-8 should be supported?", e);
+                        }
+
+                        StringBuilder hex = new StringBuilder(hash.length * 2);
+
+                        for (byte b : hash) {
+                            int i = (b & 0xFF);
+                            if (i < 0x10) hex.append('0');
+                            hex.append(Integer.toHexString(i));
+                        }
+
+                        haslo = hex.toString();
+                    }
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(8);
                     nameValuePairs.add(new BasicNameValuePair("id", id_uzytkownika));
                     nameValuePairs.add(new BasicNameValuePair("email", textBoxEmail.getText().toString()));
-                    nameValuePairs.add(new BasicNameValuePair("haslo", textBoxHaslo.getText().toString()));
+                    nameValuePairs.add(new BasicNameValuePair("haslo", haslo));
                     nameValuePairs.add(new BasicNameValuePair("imie", textBoxImie.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("nazwisko", textBoxNazwisko.getText().toString()));
                     nameValuePairs.add(new BasicNameValuePair("plec", valuePlec));
