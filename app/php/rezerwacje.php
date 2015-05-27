@@ -1,13 +1,17 @@
 <?php
 include('baza-danych.php');
 
-$sql = "SELECT id_wycieczki, nazwa, dlugosc_trasy, cena FROM wycieczki"; 
+$id_wycieczki = $_POST['id_wycieczki'];
+
+$sql = "SELECT * FROM rezerwacje WHERE id_wycieczki=".$id_wycieczki;
+
+
 $result = mysql_query($sql);
 $json = array();
  
 if(mysql_num_rows($result)){
 	while($row=mysql_fetch_assoc($result)){
-		$json['wycieczki'][]=$row;
+		$json['rezerwacje'][]=$row;
 	}
 }
 mysql_close($con);

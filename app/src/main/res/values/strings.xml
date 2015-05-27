@@ -4,7 +4,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_general">GeneralActivity</string>
     <string-array name="plec_array">
-        <item>-wybierz-</item>
+        <item>-niepodany-</item>
         <item>mężczyzna</item>
         <item>kobieta</item>
     </string-array>
@@ -25,4 +25,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_lista_uczestnikow">ListaUczestnikow</string>
+    <string name="title_activity_super_uzytkownicy">SuperUzytkownicy</string>
+    <string name="title_activity_super_promocja">SuperPromocja</string>
 </resources>

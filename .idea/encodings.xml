@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/zpi/zpi_tours/AktualizujUzytkownikaActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/zpi/zpi_tours/AktualizujWycieczkeActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/zpi/zpi_tours/RejestracjaUzytkownikaActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/zpi/zpi_tours/SuperPromocjaActivity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/example/zpi/zpi_tours/SuperUzytkownicyActivity.java" charset="UTF-8" />
   </component>
 </project>
-

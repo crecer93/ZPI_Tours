@@ -35,7 +35,7 @@ mysql_query("SET character_set_connection = 'utf8'");
 
 $pierwsze = TRUE;
 
-$sql = "UPDATE Uzytkownicy SET ";
+$sql = "UPDATE uzytkownicy SET ";
 if($email != "") {
 	if(!$pierwsze)
 		$sql .=", ";
