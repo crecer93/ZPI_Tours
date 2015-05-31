@@ -173,19 +173,23 @@ public class MainActivity extends Activity {
             Log.v("Użytkownik", "jsonMainNode: " + jsonMainNode);
 
             if (jsonMainNode != null) {
-                    String stan = jsonResponse.optString("stan");
-                    if (jsonResponse.optString("moderator").equals("1"))
-                    {
-                        czyModer = "1";
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                if (jsonMainNode.optJSONObject(0).optString("moderator").equals("1"))
+                {
+                    Log.v("Użytkownik", "to moderator.");
+                    czyModer = "1";
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
 
-                        editor.putString(mod, czyModer);
-                        editor.commit();
-                    }
-                    else czyModer = "0";
+                    editor.putString(mod, czyModer);
+                    editor.commit();
+                }
+                else {
+                    Log.v("Użytkownik", "to szary przeciętniak.");
+                    czyModer = "0";
+                }
 
 
 
+                String stan = jsonResponse.optString("stan");
                 Log.v("Użytkownik", "Odebrany stan to: "+ stan);
                 if (stan.equals("user")){
                     Log.v("Użytkownik", loginBox.getText().toString()+" jest zalogowany");
