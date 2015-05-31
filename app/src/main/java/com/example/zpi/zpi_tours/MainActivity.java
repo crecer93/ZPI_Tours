@@ -3,6 +3,7 @@ package com.example.zpi.zpi_tours;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,7 +46,10 @@ public class MainActivity extends Activity {
     EditText password ;
     Context context;
     Intent intent;
-
+    SharedPreferences sharedpreferences;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    String czyModer;
+    public static final String mod = "Moderator";
 
     private String jsonResult = "";
     private String url = "http://zpitours.za.pl/login-improved.php";
@@ -63,6 +67,8 @@ public class MainActivity extends Activity {
         buttonAnswer = (Button)findViewById(R.id.buttonAnswer);
         loginBox   = (EditText)findViewById(R.id.textBoxLogin);
         password   = (EditText)findViewById(R.id.textBoxPass);
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
 
         buttonLogin.setOnClickListener(
@@ -167,9 +173,20 @@ public class MainActivity extends Activity {
             Log.v("Użytkownik", "jsonMainNode: " + jsonMainNode);
 
             if (jsonMainNode != null) {
-                String stan = jsonResponse.optString("stan");
-                Log.v("Użytkownik", "Odebrany stan to: "+ stan);
+                    String stan = jsonResponse.optString("stan");
+                    if (jsonResponse.optString("moderator").equals("1"))
+                    {
+                        czyModer = "1";
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
 
+                        editor.putString(mod, czyModer);
+                        editor.commit();
+                    }
+                    else czyModer = "0";
+
+
+
+                Log.v("Użytkownik", "Odebrany stan to: "+ stan);
                 if (stan.equals("user")){
                     Log.v("Użytkownik", loginBox.getText().toString()+" jest zalogowany");
                     context =getApplicationContext();

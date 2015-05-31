@@ -182,7 +182,7 @@ public class GeneralActivity extends Activity  {
             for (int i = 0; i < jsonMainNode.length(); i++) {
                 Log.d(LOG_TAG, "--- Insert in myAndroidSQL: ---");
                 JSONObject jsonChildNode = jsonMainNode.getJSONObject(i);
-               jsonMainNode = jsonResponse.optJSONArray("wycieczki");
+                jsonMainNode = jsonResponse.optJSONArray("wycieczki");
 
 
                 String id = jsonChildNode.optString("id_wycieczki");
