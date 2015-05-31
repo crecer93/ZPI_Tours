@@ -4,7 +4,7 @@ include('baza-danych.php');
 $email = $_POST['email'];
 $hash = $_POST['hash'];
 
-$sql = "SELECT id_uzytkownika, email, haslo FROM uzytkownicy WHERE email='".$email."' AND haslo='".$hash."'"; 
+$sql = "SELECT id_uzytkownika, email, haslo, moderator FROM uzytkownicy WHERE email='".$email."' AND haslo='".$hash."'"; 
 $result = mysql_query($sql);
 $json = array();
 
