@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -58,7 +59,7 @@ public class WycieczkaActivity extends Activity {
     TextView cena_w;
     TextView email_mod;
     TextView ilosc_m;
-    Button lista;
+    ImageButton lista, add;
 
 
 
@@ -89,7 +90,8 @@ public class WycieczkaActivity extends Activity {
             cena_w = (TextView)findViewById(R.id.cena_w);
             email_mod = (TextView)findViewById(R.id.email_m);
             ilosc_m = (TextView)findViewById(R.id.ilosc_m);
-            lista  = (Button)findViewById(R.id.buttonLista);
+            lista  = (ImageButton)findViewById(R.id.buttonLista);
+            add  = (ImageButton)findViewById(R.id.butadd);
 
             accessWebService();
         }
@@ -102,6 +104,11 @@ public class WycieczkaActivity extends Activity {
                 Intent intent = new Intent(context,ListaUczestnikow.class  );
                 intent.putExtra("id_wycieczki",id_wycieczki);
                 startActivity(intent);
+            }
+        });
+        add.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+               //skrypt dodania sie do wycieczki
             }
         });
     }

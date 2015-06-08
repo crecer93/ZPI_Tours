@@ -212,14 +212,21 @@
             android:layout_below="@+id/textView8"
             android:layout_toRightOf="@+id/textView7" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lista Uczestników"
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:id="@+id/buttonLista"
+            android:src="@mipmap/group"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignRight="@+id/ilosc_m" />
+            android:layout_toLeftOf="@+id/data_ko" />
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/butadd"
+            android:src="@mipmap/add"
+            android:layout_alignTop="@+id/buttonLista"
+            android:layout_toRightOf="@+id/cena_w" />
 
 
     </RelativeLayout>

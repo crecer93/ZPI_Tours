@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -46,7 +49,7 @@ public class GeneralActivity extends Activity  {
     private String url = "http://zpitours.za.pl/wycieczki.php";//192.168.0.11//10.0.2.2
     public ListView listView;
     final String LOG_TAG = "myLogs";
-    Button temp1, temp2, temp3, temp4;
+    ImageButton temp1, temp2, temp3, temp4;
     Wycieczka wycieczka_adapter = new Wycieczka();
     ArrayList<Map<String, Object>> data;
     int id_w;
@@ -54,6 +57,10 @@ public class GeneralActivity extends Activity  {
     String nazwa;
     ArrayList<Wycieczka> Wycieczki =  new ArrayList<Wycieczka>(7);
     JSONArray jsonMainNode;
+    public static final String MyPREFERENCES = "MyPrefs" ;
+
+    public static final String mod = "Moderator";
+    int czyModer;
 
 
 
@@ -63,9 +70,13 @@ public class GeneralActivity extends Activity  {
         setContentView(R.layout.activity_general);
         listView = (ListView) findViewById(R.id.listView1);
 
+
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        czyModer = preferences.getInt(mod,0);
+
         accessWebService();
 
-        temp1 = (Button)findViewById(R.id.temp1);
+        temp1 = (ImageButton)findViewById(R.id.temp1);
         temp1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
@@ -73,7 +84,7 @@ public class GeneralActivity extends Activity  {
                 startActivity(intent);
             }
         });
-        temp2 = (Button)findViewById(R.id.temp2);
+        temp2 = (ImageButton)findViewById(R.id.temp2);
         temp2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
@@ -81,7 +92,10 @@ public class GeneralActivity extends Activity  {
                 startActivity(intent);
             }
         });
-        temp3 = (Button)findViewById(R.id.temp3);
+        temp3 = (ImageButton)findViewById(R.id.temp3);
+        if (czyModer==0){
+            temp3.setVisibility(View.INVISIBLE);
+        }
         temp3.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
@@ -89,7 +103,7 @@ public class GeneralActivity extends Activity  {
                 startActivity(intent);
             }
         });
-        temp4 = (Button)findViewById(R.id.temp4);
+        temp4 = (ImageButton)findViewById(R.id.temp4);
         temp4.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();

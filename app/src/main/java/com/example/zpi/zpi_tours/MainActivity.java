@@ -44,11 +44,11 @@ public class MainActivity extends Activity {
     Button   buttonAnswer;
     EditText loginBox ;
     EditText password ;
-    Context context;
+    private static Context context;
     Intent intent;
     SharedPreferences sharedpreferences;
     public static final String MyPREFERENCES = "MyPrefs" ;
-    String czyModer;
+    int czyModer;
     public static final String mod = "Moderator";
 
     private String jsonResult = "";
@@ -57,10 +57,17 @@ public class MainActivity extends Activity {
    // private String url = "http://zpitours.za.pl/login.php";//10.0.2.2//192.168.0.11
 
 
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        MainActivity.context = getApplicationContext();
 
 
         buttonLogin = (Button)findViewById(R.id.buttonLogin);
@@ -85,6 +92,7 @@ public class MainActivity extends Activity {
             }
         });
     }
+
 
     private class JsonReadTask extends AsyncTask<String, Void, String> {
         @Override
@@ -171,20 +179,25 @@ public class MainActivity extends Activity {
             JSONObject jsonResponse = new JSONObject(jsonResult);
             JSONArray jsonMainNode = jsonResponse.optJSONArray("klient");
             Log.v("Użytkownik", "jsonMainNode: " + jsonMainNode);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
 
             if (jsonMainNode != null) {
                 if (jsonMainNode.optJSONObject(0).optString("moderator").equals("1"))
                 {
                     Log.v("Użytkownik", "to moderator.");
-                    czyModer = "1";
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    czyModer = 1;
 
-                    editor.putString(mod, czyModer);
+
+                    editor.putInt (mod, czyModer);
                     editor.commit();
+
+
                 }
                 else {
                     Log.v("Użytkownik", "to szary przeciętniak.");
-                    czyModer = "0";
+                    czyModer = 0;
+                    editor.putInt (mod, czyModer);
+                    editor.commit();
                 }
 
 
