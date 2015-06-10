@@ -59,7 +59,7 @@ public class WycieczkaActivity extends Activity {
     TextView cena_w;
     TextView email_mod;
     TextView ilosc_m;
-    ImageButton lista, add;
+    ImageButton lista, add,temp4;
 
 
 
@@ -111,7 +111,18 @@ public class WycieczkaActivity extends Activity {
                //skrypt dodania sie do wycieczki
             }
         });
+
+        temp4 = (ImageButton)findViewById(R.id.temp4);
+        temp4.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Context context =getApplicationContext();
+                Intent intent = new Intent(context, AktualizujWycieczkeActivity.class );
+                intent.putExtra("id_wycieczki",id_wycieczki);
+                startActivity(intent);
+            }
+        });
     }
+
 
 
 

@@ -58,10 +58,6 @@
             android:layout_height="100dp"
             android:id="@+id/temp3"
             android:src="@mipmap/abacus_add" />
-        <ImageButton
-            android:layout_width="105px"
-            android:layout_height="100dp"
-            android:id="@+id/temp4"
-            android:src="@mipmap/abacus_pencil" />
+
     </LinearLayout>
 </RelativeLayout>

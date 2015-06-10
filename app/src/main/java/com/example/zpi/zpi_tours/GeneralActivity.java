@@ -77,6 +77,9 @@ public class GeneralActivity extends Activity  {
         accessWebService();
 
         temp1 = (ImageButton)findViewById(R.id.temp1);
+        if (czyModer==0){
+            temp1.setVisibility(View.INVISIBLE);
+        }
         temp1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Context context =getApplicationContext();
@@ -103,14 +106,7 @@ public class GeneralActivity extends Activity  {
                 startActivity(intent);
             }
         });
-        temp4 = (ImageButton)findViewById(R.id.temp4);
-        temp4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Context context =getApplicationContext();
-                Intent intent = new Intent(context, ADMIN_UpdateWycieczkaActivity.class );
-                startActivity(intent);
-            }
-        });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {

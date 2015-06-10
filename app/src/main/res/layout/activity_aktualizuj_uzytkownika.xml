@@ -25,7 +25,7 @@
 
             <EditText
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:inputType="text"
                 android:ems="10"
                 android:id="@+id/textBoxEmail"
@@ -44,7 +44,7 @@
 
             <EditText
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:inputType="textPassword"
                 android:ems="10"
                 android:id="@+id/textBoxHaslo"
@@ -63,7 +63,7 @@
 
             <EditText
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:inputType="textPassword"
                 android:ems="10"
                 android:id="@+id/textBoxPowtorzHaslo"
@@ -82,7 +82,7 @@
 
             <EditText
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:inputType="text"
                 android:ems="10"
                 android:id="@+id/textBoxImie"
@@ -101,7 +101,7 @@
 
             <EditText
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:inputType="text"
                 android:ems="10"
                 android:id="@+id/textBoxNazwisko"
@@ -120,7 +120,7 @@
 
             <Spinner
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/spinnerPlec"/>
         </LinearLayout>
 
@@ -136,7 +136,7 @@
 
             <Spinner
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/spinnerMiasto" />
 
         </LinearLayout>

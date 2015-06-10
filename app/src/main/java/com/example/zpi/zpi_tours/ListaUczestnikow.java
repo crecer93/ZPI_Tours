@@ -3,6 +3,7 @@ package com.example.zpi.zpi_tours;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -45,7 +47,11 @@ public class ListaUczestnikow extends Activity {
     ArrayList<Map<String, Object>> data;
     public ListView listUczestnicy;
     SimpleAdapter simpleAdapter ;
+    int czyModer;
+    public static final String MyPREFERENCES = "MyPrefs" ;
 
+    public static final String mod = "Moderator";
+    ImageButton remove;
 
     String id_wycieczki;
 
@@ -53,6 +59,13 @@ public class ListaUczestnikow extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SharedPreferences preferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        czyModer = preferences.getInt(mod,0);
+        remove  = (ImageButton)findViewById(R.id.imageButton);
+
+        if (czyModer==0){
+           remove.setVisibility(View.INVISIBLE);
+        }
         id_wycieczki = getIntent().getStringExtra("id_wycieczki");
         if(id_wycieczki == null) {
             Toast.makeText(getApplicationContext(),

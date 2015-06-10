@@ -219,14 +219,21 @@
             android:id="@+id/buttonLista"
             android:src="@mipmap/group"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/data_ko" />
+            android:layout_alignParentLeft="true" />
         <ImageButton
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/butadd"
             android:src="@mipmap/add"
-            android:layout_alignTop="@+id/buttonLista"
-            android:layout_toRightOf="@+id/cena_w" />
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/textView3" />
+        <ImageButton
+            android:layout_width="105px"
+            android:layout_height="100dp"
+            android:id="@+id/temp4"
+            android:src="@mipmap/abacus_pencil"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/poziom_w" />
 
 
     </RelativeLayout>
